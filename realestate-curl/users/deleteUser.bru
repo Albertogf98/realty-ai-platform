@@ -1,0 +1,20 @@
+meta {
+  name: deleteUser
+  type: http
+  seq: 6
+}
+
+delete {
+  url: http://localhost:3001/users/10b3fff0-2546-472a-9c23-1d40a4984efc
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer <JWT_TOKEN>
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}

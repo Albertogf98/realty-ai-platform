@@ -1,0 +1,19 @@
+meta {
+  name: getAllByUser
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/favorites/user/
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer 
+}
+
+settings {
+  encodeUrl: false
+}

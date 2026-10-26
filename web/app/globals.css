@@ -1,0 +1,106 @@
+@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================
+   VARIABLES GLOBALES
+   ========================= */
+:root {
+  /* Colores base */
+  --background: #ffffff; /* gris muy claro */
+  --surface: #ffffff; /* cards / panels */
+  --foreground: #1a1a1a; /* texto principal */
+
+  /* Paleta premium */
+  --primary-gold: #b3aa90; /* dorado sobrio (no chillón) */
+  --primary-gold-muted: #e6d9a8; /* hover / borders suaves */
+  --secondary-gray: #9ca3af; /* texto secundario */
+  --border-color: #e5e7eb;
+
+  /* Estados */
+  --success: #15803d;
+  --danger: #b91c1c;
+  --warning: #dcd1c2;
+
+  /* Tipografía */
+  --font-sans: 'Geist Sans', Arial, Helvetica, sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+}
+
+/* =========================
+   TAILWIND THEME
+   ========================= */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-border: var(--border-color);
+
+  --color-primary: var(--primary-gold);
+  --color-primary-muted: var(--primary-gold-muted);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+/* =========================
+   BASE
+   ========================= */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =========================
+   ELEMENTOS COMUNES
+   ========================= */
+.card {
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.text-muted {
+  color: var(--secondary-gray);
+}
+
+/* Botones */
+.btn-primary {
+  background-color: var(--primary-gold);
+  color: #111827;
+}
+
+.btn-primary:hover {
+  background-color: #b8961f;
+}
+
+/* =========================
+   DARK MODE
+   ========================= */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f1115; /* negro azulado */
+    --surface: #161a22; /* cards */
+    --foreground: #e5e7eb;
+
+    --secondary-gray: #9ca3af;
+    --border-color: #2a2f3a;
+
+    --primary-gold: #d4af37; /* dorado más elegante en dark */
+    --primary-gold-muted: #3a3522;
+  }
+
+  body {
+    background-color: var(--background);
+  }
+
+  .card {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+}

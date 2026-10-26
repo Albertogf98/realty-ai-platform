@@ -1,0 +1,26 @@
+meta {
+  name: getMlg
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://countriesnow.space/api/v0.1/countries/state/cities
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "country": "Spain",
+    "state": "Andalusia"
+  }
+}
+
+settings {
+  encodeUrl: false
+}

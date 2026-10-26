@@ -1,0 +1,72 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16
+    container_name: realestate-db
+    environment:
+      POSTGRES_DB: realestate
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  memcached:
+    image: memcached:latest
+    container_name: realestate-memcached
+    ports:
+      - '11212:11211'
+    command: ['memcached', '-m', '128', '-c', '1024', '-v']
+
+  typesense:
+    image: typesense/typesense:0.25.0
+    container_name: realestate-typesense
+    ports:
+      - '8109:8108'
+    environment:
+      TYPESENSE_API_KEY: xyz123
+    command: >
+      typesense-server
+      --data-dir /data
+      --api-key xyz123
+      --listen-port 8108
+    volumes:
+      - typesense_data:/data
+
+  redis:
+    image: redis:7
+    container_name: realestate-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+
+  app:
+    build: .
+    container_name: realestate-app
+    ports:
+      - '3050:3050'
+    depends_on:
+      - db
+      - memcached
+      - typesense
+      - redis
+    environment:
+      DATABASE_URL: postgres://admin:admin@db:5432/realestate
+      MEMCACHED_HOST: memcached
+      MEMCACHED_PORT: 11211
+      TYPESENSE_HOST: typesense
+      TYPESENSE_PORT: 8108
+      TYPESENSE_API_KEY: xyz123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - .:/usr/src/app
+    command: pnpm run start:dev
+
+volumes:
+  postgres_data:
+  typesense_data:
+  redis_data:

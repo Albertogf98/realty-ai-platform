@@ -1,0 +1,19 @@
+meta {
+  name: get
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/reviews/agent/
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer 
+}
+
+settings {
+  encodeUrl: false
+}

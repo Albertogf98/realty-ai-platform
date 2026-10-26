@@ -1,0 +1,27 @@
+meta {
+  name: updateProperty
+  type: http
+  seq: 3
+}
+
+patch {
+  url: http://localhost:3000/properties/
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "price": 550000,
+    "status": "USED"
+  }
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}

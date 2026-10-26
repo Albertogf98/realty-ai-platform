@@ -1,0 +1,22 @@
+meta {
+  name: create
+  type: http
+  seq: 10
+}
+
+post {
+  url: https://reqres.in/api/register
+  body: formUrlEncoded
+  auth: inherit
+}
+
+body:form-urlencoded {
+  "{
+      \"email\": \"qatestuser29@gmail.com\",
+      \"password\": \"pistol\"
+  }": 
+}
+
+settings {
+  encodeUrl: false
+}

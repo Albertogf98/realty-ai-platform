@@ -1,0 +1,20 @@
+meta {
+  name: getAll
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3001/properties
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWE0ZTQxNC0zMjRjLTQwMjYtOTI4ZS1hMWM3N2VmODk1ZWQiLCJlbWFpbCI6ImFnZW50MkB0ZXN0LmNvbSIsInJvbGUiOiJBR0VOVCIsImlhdCI6MTc2NTM3NTY2NywiZXhwIjoxNzY1NDYyMDY3fQ.OZLG1-L5T1t5lj2DYGiroGMPpa-cLK9XMh-me-t39r8
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}

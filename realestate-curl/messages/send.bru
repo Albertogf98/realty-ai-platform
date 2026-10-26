@@ -1,0 +1,29 @@
+meta {
+  name: send
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3001/messages
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "senderId": "bbb298ef-15bd-48f0-9f14-5c1f674626cf",
+    "propertyId": "a7d6ed12-3cfa-49c0-94fb-bfb81f8890d6",
+    "content": "Hola, estoy interesado en esta propiedad."
+  }
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}

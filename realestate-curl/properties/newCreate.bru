@@ -1,0 +1,48 @@
+meta {
+  name: newCreate
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:3001/properties
+  body: multipartForm
+  auth: bearer
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyODRmMmM3YS0yMGQ0LTQyM2ItOWVkMS00MTY2ZTk5MDVkNDciLCJlbWFpbCI6ImFkbWluQGFkbWluLmFkbWluIiwicm9sZSI6IkFHRU5UIiwiaWF0IjoxNzY1ODgxODgyLCJleHAiOjE3NjU4ODI3ODJ9.r6dIQtdzq6P-jKpqdtptxEteqP1sXEeF9hkA9SmF6ZI
+  Content-Type: multipart/form-data
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyODRmMmM3YS0yMGQ0LTQyM2ItOWVkMS00MTY2ZTk5MDVkNDciLCJlbWFpbCI6ImFkbWluQGFkbWluLmFkbWluIiwicm9sZSI6IkFHRU5UIiwiaWF0IjoxNzY1ODg0NzAyLCJleHAiOjE3NjU4ODU2MDJ9.3_7IeLiCLwY8oUBj1wFKHwe99JjgMpl9lSpfPY7MdVA
+}
+
+body:multipart-form {
+  title_es: Casa en la playa
+  title_en: Beach House
+  description_es: Una casa preciosa
+  description_en: A beautiful house
+  price: 250000
+  type: HOUSE
+  status: NEW
+  operation: SALE
+  rooms: 3
+  bathrooms: 2
+  sqm: 120
+  address: Calle Falsa 123
+  city: Malaga
+  state: Andalusia
+  country: Spain
+  zipCode: 29001
+  agentId: 284f2c7a-20d4-423b-9ed1-4166e9905d47
+  parking: false
+  garden: true
+  images: @file(/Users/alberto.gandoy/Documents/me.jpeg)
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}

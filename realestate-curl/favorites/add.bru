@@ -1,0 +1,27 @@
+meta {
+  name: add
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/favorites
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer 
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "userId": "",
+    "propertyId": ""
+  }
+}
+
+settings {
+  encodeUrl: false
+}

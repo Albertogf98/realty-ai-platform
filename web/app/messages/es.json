@@ -1,0 +1,258 @@
+{
+  "Header": {
+    "title": "Inmobiliaria de Lujo en Marbella",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "profile": "Perfil",
+    "favorites": "Favoritos",
+    "appointments": "Citas",
+    "dashboard": "Panel",
+    "newProperty": "Nueva Propiedad",
+    "logout": "Cerrar sesión",
+    "messages": "Mensajes"
+  },
+
+  "Common": {
+    "loading": "Cargando...",
+    "loadingError": "Error al cargar la página"
+  },
+
+  "Filters": {
+    "title": "Título",
+    "city": "Ciudad",
+    "type": "Tipo",
+    "typeHouse": "Casa",
+    "typeApartment": "Apartamento",
+    "status": "Estado",
+    "statusNew": "Nuevo",
+    "statusUsed": "Usado",
+    "statusToRenovate": "Renovar",
+    "operation": "Operación",
+    "operationSale": "Venta",
+    "operationRent": "Alquilar",
+    "rooms": "Habitaciones",
+    "bathrooms": "Baños",
+    "minPrice": "Precio mínimo",
+    "maxPrice": "Precio máximo",
+    "apply": "Aplicar",
+    "reset": "Limpiar",
+    "filters": "Filtros"
+  },
+
+  "SidebarAgent": {
+    "myProperties": "Mis Propiedades",
+    "reviews": "Comentarios",
+    "messages": "Mensajes"
+  },
+
+  "SidebarUser": {
+    "favorites": "Favoritos",
+    "appointments": "Citas",
+    "history": "Historial"
+  },
+
+  "Login": {
+    "title": "Iniciar Sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "loading": "Cargando...",
+    "registerLabel": "¿No tienes cuenta?",
+    "register": "Regístrate"
+  },
+
+  "PropertyCard": {
+    "rooms": "hab",
+    "bathrooms": "baños",
+    "rent": "Alquilar",
+    "buy": "Comprar"
+  },
+
+  "PropertyDetails": {
+    "details": "Detalles",
+    "price": "Precio",
+    "rooms": "habitaciones",
+    "bathrooms": "baños",
+    "parking": "Parking disponible",
+    "garden": "Jardín disponible",
+    "operation": "Operación",
+    "description": "Descripción",
+    "agent": "Agente",
+    "deleteProperty": "Eliminar propiedad",
+    "confirmDelete": "Confirmar eliminación",
+    "typePropertyIdToConfirm": "Escribe el ID de la propiedad para confirmar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "idDoesNotMatch": "El ID introducido no coincide con la propiedad.",
+    "deleteFailed": "La eliminación de la propiedad ha fallado. Intenta de nuevo.",
+    "deleting": "Eliminando propiedad...",
+    "scheduleVisit": "Preguntar por visita",
+    "messageSent": "Mensaje enviado",
+    "visitMessage": "Hola, estoy interesado en esta propiedad",
+    "loginToSchedule": "Por favor, inicia sesión para agendar una visita"
+  },
+
+  "Register": {
+    "title": "Registrar Nuevo Usuario",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "loading": "Registrando...",
+    "loginLabel": "¿Ya tienes cuenta?",
+    "login": "Inicia sesión",
+    "confirmPassword": "Confirmar Contraseña",
+    "passwordsDoNotMatch": "Las contraseñas no coinciden"
+  },
+
+  "RegisterProperty": {
+    "createProperty": "Crear Nueva Propiedad",
+    "titleEs": "Título (Español)",
+    "titleEn": "Título (Inglés)",
+    "descriptionEs": "Descripción (Español)",
+    "descriptionEn": "Descripción (Inglés)",
+    "price": "Precio (€)",
+    "propertyType": "Tipo de propiedad",
+    "status": "Estado",
+    "operation": "Operación",
+    "rooms": "Habitaciones",
+    "bathrooms": "Baños",
+    "sqm": "Metros cuadrados",
+    "address": "Dirección",
+    "state": "Provincia / Estado",
+    "country": "País",
+    "zipCode": "Código postal",
+    "latitude": "Latitud",
+    "longitude": "Longitud",
+    "city": "Ciudad",
+    "selectCity": "Selecciona ciudad",
+    "agent": "Agente responsable",
+    "selectAgent": "Selecciona agente",
+    "parking": "Parking",
+    "garden": "Jardín",
+    "images": "Imágenes",
+    "dragOrClick": "Arrastra tus imágenes aquí o haz click para seleccionar",
+    "preview": "Vista previa",
+    "loading": "Cargando...",
+    "errorLoading": "Error cargando ciudades",
+    "saving": "Guardando...",
+    "HOUSE": "Casa",
+    "APARTMENT": "Apartamento",
+    "NEW": "Nuevo",
+    "USED": "Usado",
+    "TO_RENOVATE": "Por renovar",
+    "SALE": "Venta",
+    "RENT": "Alquiler"
+  },
+
+  "Messages": {
+    "conversations": "Conversaciones",
+    "selectConversation": "selecciona una conversación",
+    "typeMessage": "Escribir mensaje",
+    "send": "Enviar",
+    "noMessages": "Sin mensajes",
+    "schedule": "Agendar cita",
+    "new": "NUEVO",
+    "appointmentScheduled": "Se ha agendado una cita para el {date} en la calle {address}",
+    "appointmentSuccess": "Cita agendada ✅",
+    "calendar": {
+      "title": "Cita {property} con {client}",
+      "details": "Reunión sobre la propiedad {property}"
+    },
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "selectDate": "Selecciona una fecha",
+    "delete": "borrar conversación"
+  },
+
+  "Favorites": {
+    "myFavorites": "Mis favoritos",
+    "noFavorites": "Todavía no tienes propiedades favoritas.",
+    "viewProperty": "Ver propiedad",
+    "removeFavorite": "Eliminar"
+  },
+
+  "Appointments": {
+    "title": "Mis Citas",
+    "notAuthenticated": "No autenticado",
+    "noAppointments": "No tienes citas agendadas",
+    "confirmDelete": "¿Seguro que deseas cancelar esta cita?",
+    "delete": "Eliminar",
+    "date": "Fecha",
+    "property": "Propiedad",
+    "client": "Cliente: {email}",
+    "agent": "Agente: {email}",
+    "deleting": "Cancelando cita...",
+    "deleted": "Cita cancelada ✅",
+    "deleteError": "Error al cancelar la cita",
+    "pastAppointment": "No puedes cancelar una cita pasada"
+  },
+
+  "Cookies": {
+    "title": "🍪 Cookies",
+    "description": "Usamos cookies para mejorar tu experiencia. Al continuar aceptas nuestra <privacyPolicy>política de privacidad</privacyPolicy>.",
+    "privacyPolicy": "política de privacidad",
+    "accept": "Aceptar",
+    "reject": "Rechazar"
+  },
+
+  "Privacy": {
+    "title": "Política de Privacidad",
+    "intro": "En cumplimiento de lo dispuesto en el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD), te informamos sobre el tratamiento de tus datos personales.",
+
+    "section1": {
+      "title": "1. Responsable del tratamiento",
+      "content": {
+        "responsible": "Responsable:",
+        "name": "Nombre del titular o empresa",
+        "email": "Correo electrónico:",
+        "emailValue": "contacto@tudominio.com",
+        "domain": "Dominio web:",
+        "domainValue": "tudominio.com"
+      }
+    },
+
+    "section2": {
+      "title": "2. Finalidad del tratamiento",
+      "intro": "Los datos personales que recopilamos se utilizan con las siguientes finalidades:",
+      "items": ["Gestionar consultas realizadas a través del sitio web.", "Mejorar la experiencia de usuario y el funcionamiento del sitio.", "Cumplir con obligaciones legales."]
+    },
+
+    "section3": {
+      "title": "3. Legitimación",
+      "content": "La base legal para el tratamiento de tus datos es el consentimiento del usuario y el interés legítimo del responsable."
+    },
+
+    "section4": {
+      "title": "4. Conservación de los datos",
+      "content": "Los datos se conservarán durante el tiempo estrictamente necesario para cumplir con la finalidad para la que se recaban o mientras exista una obligación legal."
+    },
+
+    "section5": {
+      "title": "5. Destinatarios",
+      "content": "No se cederán datos a terceros, salvo obligación legal o proveedores necesarios para el funcionamiento del sitio web."
+    },
+
+    "section6": {
+      "title": "6. Derechos del usuario",
+      "content": "Puedes ejercer los derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad enviando un correo a:"
+    },
+
+    "section7": {
+      "title": "7. Medidas de seguridad",
+      "content": "El responsable adopta las medidas técnicas y organizativas necesarias para garantizar la seguridad y confidencialidad de los datos personales."
+    },
+
+    "section8": {
+      "title": "8. Cambios en la política de privacidad",
+      "content": "Nos reservamos el derecho a modificar la presente política para adaptarla a novedades legislativas o jurisprudenciales."
+    },
+
+    "lastUpdate": "Última actualización:"
+  },
+
+  "Pagination": {
+    "first": "Primera",
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "last": "Última"
+  }
+}

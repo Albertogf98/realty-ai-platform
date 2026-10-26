@@ -1,0 +1,29 @@
+meta {
+  name: register
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3001/auth/register
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "admin23@admin.admin",
+    "password": "admin",
+    "name": "Admin Admin",
+    "role": "AGENT"
+  }
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}

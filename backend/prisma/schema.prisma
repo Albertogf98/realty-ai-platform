@@ -1,0 +1,139 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  AGENT
+  ADMIN
+}
+
+enum PropertyType {
+  HOUSE
+  APARTMENT
+}
+
+enum PropertyStatus {
+  NEW
+  USED
+  TO_RENOVATE
+}
+
+enum OperationType {
+  SALE
+  RENT
+}
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  password     String
+  name         String?
+  refreshToken String?
+  role         Role       @default(USER)
+  createdAt    DateTime   @default(now())
+
+  properties   Property[] @relation("AgentProperties") 
+  bought       Property[] @relation("BuyerProperties")
+  favorites    Favorite[]
+  messages     Message[]
+  reviews      Review[] 
+  agentReviews Review[] @relation("AgentReviews")  
+  appointmentsAsUser  Appointment[] @relation("UserAppointments")
+  appointmentsAsAgent Appointment[] @relation("AgentAppointments")
+}
+
+model Property {
+  id             String          @id @default(uuid())
+  title_es       String
+  title_en       String
+  description_es String
+  description_en String
+  price          Int
+  type           PropertyType
+  status         PropertyStatus
+  operation      OperationType
+  rooms          Int
+  bathrooms      Int
+  sqm            Int
+  address        String
+  city           String
+  state          String
+  country        String
+  zipCode        String
+  latitude       Float?
+  longitude      Float?
+  parking        Boolean?
+  garden         Boolean?
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  soldAt         DateTime?
+  buyerId        String?
+  agentId        String
+
+  agent      User            @relation("AgentProperties", fields: [agentId], references: [id])
+  buyer      User?           @relation("BuyerProperties", fields: [buyerId], references: [id])
+  images     PropertyImage[]
+  favorites  Favorite[]
+  messages   Message[]
+  appointments Appointment[] @relation("PropertyAppointments")
+}
+
+model PropertyImage {
+  id         String   @id @default(uuid())
+  url        String
+  propertyId String
+  public_id  String?
+  property   Property @relation(fields: [propertyId], references: [id])
+}
+
+model Favorite {
+  id         String   @id @default(uuid())
+  userId     String
+  propertyId String
+  createdAt  DateTime @default(now())
+  property   Property @relation(fields: [propertyId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  senderId   String
+  propertyId String
+  content    String
+  createdAt  DateTime @default(now())
+  read       Boolean  @default(false)
+  property   Property @relation(fields: [propertyId], references: [id])
+  sender     User     @relation(fields: [senderId], references: [id])
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  rating     Int
+  comment    String?
+  reviewerId String
+  agentId    String
+  createdAt  DateTime @default(now())
+  agent      User     @relation("AgentReviews", fields: [agentId], references: [id])
+  reviewer   User     @relation(fields: [reviewerId], references: [id])
+}
+
+
+model Appointment {
+  id         String   @id @default(uuid())
+  propertyId String
+  userId     String
+  agentId    String
+  date       DateTime
+  createdAt  DateTime @default(now())
+
+  property   Property @relation("PropertyAppointments", fields: [propertyId], references: [id])
+  user       User     @relation("UserAppointments", fields: [userId], references: [id])
+  agent      User     @relation("AgentAppointments", fields: [agentId], references: [id])
+}

@@ -1,0 +1,20 @@
+meta {
+  name: show
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/messages/property/6950f362-6210-4edc-a6b3-a813a54f2b8f
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}

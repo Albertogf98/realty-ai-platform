@@ -1,0 +1,258 @@
+{
+  "Header": {
+    "title": "Luxury Real Estate in Marbella",
+    "login": "Log in",
+    "register": "Register",
+    "profile": "Profile",
+    "favorites": "Favorites",
+    "appointments": "Appointments",
+    "dashboard": "Dashboard",
+    "newProperty": "New Property",
+    "logout": "Log out",
+    "messages": "Messages"
+  },
+
+  "Common": {
+    "loading": "Loading...",
+    "loadingError": "Error loading the page"
+  },
+
+  "Filters": {
+    "title": "Title",
+    "city": "City",
+    "type": "Type",
+    "typeHouse": "House",
+    "typeApartment": "Apartment",
+    "status": "Status",
+    "statusNew": "New",
+    "statusUsed": "Used",
+    "statusToRenovate": "To Renovate",
+    "operation": "Operation",
+    "operationSale": "Sale",
+    "operationRent": "Rent",
+    "rooms": "Rooms",
+    "bathrooms": "Bathrooms",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "apply": "Apply",
+    "reset": "Reset",
+    "filters": "Filters"
+  },
+
+  "SidebarAgent": {
+    "myProperties": "My Properties",
+    "reviews": "Reviews",
+    "messages": "Messages"
+  },
+
+  "SidebarUser": {
+    "favorites": "Favorites",
+    "appointments": "Appointments",
+    "history": "History"
+  },
+
+  "Login": {
+    "title": "Log In",
+    "email": "Email",
+    "password": "Password",
+    "loading": "Loading...",
+    "registerLabel": "Don't have an account?",
+    "register": "Sign Up"
+  },
+
+  "PropertyCard": {
+    "rooms": "rooms",
+    "bathrooms": "bathrooms",
+    "rent": "Rent",
+    "buy": "Buy"
+  },
+
+  "PropertyDetails": {
+    "details": "Details",
+    "price": "Price",
+    "rooms": "Rooms",
+    "bathrooms": "Bathrooms",
+    "parking": "Parking available",
+    "garden": "Garden available",
+    "operation": "Operation",
+    "description": "Description",
+    "agent": "Agent",
+    "deleteProperty": "Delete Proproperty",
+    "confirmDelete": "Confirm delete",
+    "typePropertyIdToConfirm": "Type the property ID to confirm",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "idDoesNotMatch": "The entered ID does not match the property.",
+    "deleteFailed": "Failed to delete the property. Please try again.",
+    "deleting": "Removing...",
+    "scheduleVisit": "Ask for visit",
+    "messageSent": "Message for visit sender",
+    "visitMessage": "Hello, I´m interesting in this property",
+    "loginToSchedule": "Please log in to schedule a visit"
+  },
+
+  "Register": {
+    "title": "Register New User",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "loading": "Registering...",
+    "loginLabel": "Already have an account?",
+    "login": "Login",
+    "confirmPassword": "Confirm Password",
+    "passwordsDoNotMatch": "Passwords do not match"
+  },
+
+  "RegisterProperty": {
+    "createProperty": "Create New Property",
+    "titleEs": "Title (Spanish)",
+    "titleEn": "Title (English)",
+    "descriptionEs": "Description (Spanish)",
+    "descriptionEn": "Description (English)",
+    "price": "Price (€)",
+    "propertyType": "Property Type",
+    "status": "Status",
+    "operation": "Operation",
+    "rooms": "Rooms",
+    "bathrooms": "Bathrooms",
+    "sqm": "Square meters",
+    "address": "Address",
+    "state": "State / Province",
+    "country": "Country",
+    "zipCode": "Zip Code",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "city": "City",
+    "selectCity": "Select a city",
+    "agent": "Responsible agent",
+    "selectAgent": "Select an agent",
+    "parking": "Parking",
+    "garden": "Garden",
+    "images": "Images",
+    "dragOrClick": "Drag your images here or click to select",
+    "preview": "Preview",
+    "loading": "Loading...",
+    "errorLoading": "Error loading cities",
+    "saving": "Saving...",
+    "HOUSE": "House",
+    "APARTMENT": "Apartment",
+    "NEW": "New",
+    "USED": "Used",
+    "TO_RENOVATE": "To renovate",
+    "SALE": "Sale",
+    "RENT": "Rent"
+  },
+
+  "Messages": {
+    "conversations": "Conversations",
+    "selectConversation": "Select a conversation",
+    "typeMessage": "Type message",
+    "send": "Send",
+    "noMessages": "No messages",
+    "schedule": "Schedule Appointment",
+    "new": "NEW",
+    "appointmentScheduled": "An appointment has been scheduled for {date} in street {address}",
+    "appointmentSuccess": "Appointment scheduled ✅",
+    "calendar": {
+      "title": "Appointment {property} with {client}",
+      "details": "Meeting about the property {property}"
+    },
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "selectDate": "Select a date",
+    "delete": "delete conversation"
+  },
+
+  "Favorites": {
+    "myFavorites": "My favorites",
+    "noFavorites": "You don't have any favorite properties yet.",
+    "viewProperty": "View property",
+    "removeFavorite": "Remove"
+  },
+
+  "Appointments": {
+    "title": "My Appointments",
+    "notAuthenticated": "Not authenticated",
+    "noAppointments": "You have no scheduled appointments",
+    "confirmDelete": "Are you sure you want to cancel this appointment?",
+    "delete": "Delete",
+    "date": "Date",
+    "property": "Property",
+    "client": "Client: {email}",
+    "agent": "Agent: {email}",
+    "deleting": "Cancelling appointment...",
+    "deleted": "Appointment cancelled ✅",
+    "deleteError": "Error cancelling appointment",
+    "pastAppointment": "You cannot cancel a past appointment"
+  },
+
+  "Cookies": {
+    "title": "🍪 Cookies",
+    "description": "We use cookies to improve your experience. By continuing, you accept our <privacyPolicy>Privacy Policy</privacyPolicy>.",
+    "privacyPolicy": "privacy policy",
+    "accept": "Accept",
+    "reject": "Reject"
+  },
+
+  "Privacy": {
+    "title": "Privacy Policy",
+    "intro": "In accordance with Regulation (EU) 2016/679 (GDPR) and Organic Law 3/2018, we inform you about the processing of your personal data.",
+
+    "section1": {
+      "title": "1. Data Controller",
+      "content": {
+        "responsible": "Controller:",
+        "name": "Name of the owner or company",
+        "email": "Email:",
+        "emailValue": "contact@yourdomain.com",
+        "domain": "Website domain:",
+        "domainValue": "yourdomain.com"
+      }
+    },
+
+    "section2": {
+      "title": "2. Purpose of processing",
+      "intro": "The personal data we collect is used for the following purposes:",
+      "items": ["Managing inquiries made through the website.", "Improving user experience and website performance.", "Complying with legal obligations."]
+    },
+
+    "section3": {
+      "title": "3. Legal basis",
+      "content": "The legal basis for processing your data is user consent and the legitimate interest of the controller."
+    },
+
+    "section4": {
+      "title": "4. Data retention",
+      "content": "Data will be retained only for as long as necessary to fulfill the purpose for which it was collected or as long as a legal obligation exists."
+    },
+
+    "section5": {
+      "title": "5. Recipients",
+      "content": "Data will not be shared with third parties, except where legally required or with providers necessary for the operation of the website."
+    },
+
+    "section6": {
+      "title": "6. User rights",
+      "content": "You may exercise your rights of access, rectification, erasure, objection, restriction, and portability by sending an email to:"
+    },
+
+    "section7": {
+      "title": "7. Security measures",
+      "content": "The controller implements the necessary technical and organizational measures to ensure the security and confidentiality of personal data."
+    },
+
+    "section8": {
+      "title": "8. Changes to the privacy policy",
+      "content": "We reserve the right to modify this policy to adapt it to legislative or jurisprudential developments."
+    },
+
+    "lastUpdate": "Last updated:"
+  },
+
+  "Pagination": {
+    "first": "First",
+    "prev": "Previous",
+    "next": "Next",
+    "last": "Last"
+  }
+}

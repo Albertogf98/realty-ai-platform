@@ -1,0 +1,45 @@
+meta {
+  name: login
+  type: http
+  seq: 8
+}
+
+post {
+  url: https://quickpizza.grafana.com/api/users/token/login?set_cookie=truehttps://quickpizza.grafana.com/api/ratings
+  body: json
+  auth: inherit
+}
+
+params:query {
+  set_cookie: truehttps://quickpizza.grafana.com/api/ratings
+}
+
+headers {
+  accept: */*
+  accept-language: en-GB,en-US;q=0.9,en;q=0.8
+  content-type: application/json
+  Cookie: AWSALB=LhfHCjb+O5g02MoSV0eejOZ0Jv5FRwNACv5+SRwHrbvy4uZukrtqeE58TZEj8izfC4g94y2kD2qa/L/wVuEfk5FnhH120m4vqY0UI03FqHjmhY0svi7g60rBbhJj; AWSALBCORS=LhfHCjb+O5g02MoSV0eejOZ0Jv5FRwNACv5+SRwHrbvy4uZukrtqeE58TZEj8izfC4g94y2kD2qa/L/wVuEfk5FnhH120m4vqY0UI03FqHjmhY0svi7g60rBbhJj; csrf_token=Gy892et3xIC1xYPPl0UQ5TRHKS1cxNoq; AWSALB=5OVNIcCIKjd/YybxRzobyhvq08qqNVIwq7+46d1ca2KGNanOK1wIusXWzDYX1Kj/MFzGlNMg17WQ8568exxFPas8ngwARFfGdSolYaU29fpdjLttq2v1wX96HBY1; AWSALBCORS=5OVNIcCIKjd/YybxRzobyhvq08qqNVIwq7+46d1ca2KGNanOK1wIusXWzDYX1Kj/MFzGlNMg17WQ8568exxFPas8ngwARFfGdSolYaU29fpdjLttq2v1wX96HBY1; qp_user_token=abcdef0123456789
+  origin: https://quickpizza.grafana.com
+  priority: u=1, i
+  referer: https://quickpizza.grafana.com/login
+  sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+  sec-ch-ua-mobile: ?0
+  sec-ch-ua-platform: "macOS"
+  sec-fetch-dest: empty
+  sec-fetch-mode: cors
+  sec-fetch-site: same-origin
+  traceparent: 00-107f17d86f22b906a40844c1c7420930-24dff712cff37634-00
+  user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+}
+
+body:json {
+  {
+    "username": "default",
+    "password": "12345678",
+    "csrf": "Gy892et3xIC1xYPPl0UQ5TRHKS1cxNoq"
+  }
+}
+
+settings {
+  encodeUrl: false
+}
