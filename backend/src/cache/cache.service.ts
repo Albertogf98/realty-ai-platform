@@ -12,18 +12,31 @@ export class CacheService {
   }
 
   async get<T>(key: string): Promise<T | null> {
-    const result = await this.client.get(key);
+    try {
+      const result = await this.client.get(key);
+      if (!result?.value) return null;
 
-    if (!result.value) return null;
-
-    return JSON.parse(result.value.toString()) as T;
+      return JSON.parse(result.value.toString()) as T;
+    } catch (error) {
+      return null;
+    }
   }
 
   async set<T>(key: string, value: T, ttlSeconds = 60) {
-    await this.client.set(key, JSON.stringify(value), { expires: ttlSeconds });
+    try {
+      await this.client.set(key, JSON.stringify(value), {
+        expires: ttlSeconds,
+      });
+    } catch (error) {
+      return;
+    }
   }
 
   async del(key: string) {
-    await this.client.delete(key);
+    try {
+      await this.client.delete(key);
+    } catch (error) {
+      return;
+    }
   }
 }

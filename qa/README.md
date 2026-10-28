@@ -1,5 +1,5 @@
 # API y Ollama arrancados. Opcionalmente:
-export API_URL=http://127.0.0.1:3000
+export API_URL=http://127.0.0.1:4000
 export JUDGE_MODEL=qwen2.5:14b
 
 pytest                          # todo

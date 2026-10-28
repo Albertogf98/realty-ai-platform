@@ -47,11 +47,20 @@ export class OllamaController {
   }
 
   @Post('search-properties')
-  async searchProperties(@Body() dto: { question: string }) {
+  async searchProperties(
+    @Body()
+    dto: {
+      question: string;
+      history?: Array<{ role: 'user' | 'assistant'; content: string }>;
+    },
+  ) {
     if (!dto?.question) {
       throw new BadRequestException('Question is not defined');
     }
 
-    return this.ollamaService.searchPropertiesByQuestion(dto.question);
+    return this.ollamaService.searchPropertiesByQuestion(
+      dto.question,
+      Array.isArray(dto.history) ? dto.history : [],
+    );
   }
 }

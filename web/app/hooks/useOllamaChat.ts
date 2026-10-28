@@ -9,6 +9,20 @@ export type ChatMessage = {
   content: string;
 };
 
+type OllamaResponse = {
+  answer: string;
+  filters?: Record<string, unknown>;
+  properties?: Array<Record<string, unknown>>;
+};
+
+const createMessageId = () => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+};
+
 export function useOllamaChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -28,7 +42,7 @@ export function useOllamaChat() {
     }
 
     const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
+      id: createMessageId(),
       role: 'user',
       content: trimmed,
     };
@@ -37,9 +51,16 @@ export function useOllamaChat() {
     setIsLoading(true);
     setError(null);
 
+    // Historial reciente (sin el mensaje nuevo ni el saludo inicial)
+    const history = messages
+      .filter(message => message.id !== 'welcome')
+      .slice(-6)
+      .map(({ role, content }) => ({ role, content }));
+
     try {
-      const response = await api.post<{ answer: string; filters?: any; properties?: any[] }>('ollama/search-properties', {
+      const response = await api.post<OllamaResponse>('ollama/search-properties', {
         question: trimmed,
+        history,
       });
 
       const answer = response.data.answer || 'No tengo respuesta disponible ahora mismo.';
@@ -47,22 +68,22 @@ export function useOllamaChat() {
       setMessages(prev => [
         ...prev,
         {
-          id: crypto.randomUUID(),
+          id: createMessageId(),
           role: 'assistant',
           content: answer,
         },
       ]);
 
       return answer;
-    } catch (err: any) {
-      const backendMessage = err?.response?.data?.message || 'No he podido contactar con el asistente en este momento.';
+    } catch (err: unknown) {
+      const backendMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'No he podido contactar con el asistente en este momento.';
 
       setError(backendMessage);
 
       setMessages(prev => [
         ...prev,
         {
-          id: crypto.randomUUID(),
+          id: createMessageId(),
           role: 'assistant',
           content: 'No he podido contactar con el asistente. Inténtalo otra vez.',
         },

@@ -84,9 +84,9 @@ export class PropertiesService {
           files.map((file) => this.cloudinaryService.uploadFile(file)),
         );
         imagesUpdate.push(...uploadedImages);
-      } catch (err) {
+      } catch (err: any) {
         throw new InternalServerErrorException(
-          `Error uploading images: ${err.message}`,
+          `Error uploading images: ${err.message || ''}`,
         );
       }
     }
@@ -104,7 +104,7 @@ export class PropertiesService {
         if (img.public_id) {
           try {
             await this.cloudinaryService.deleteImage(img.public_id);
-          } catch (err) {
+          } catch (err: any) {
             console.warn(
               `Failed to delete image ${img.public_id}: ${err.message}`,
             );
@@ -200,13 +200,7 @@ export class PropertiesService {
 
     if (filters.city) {
       const cityVariants = Array.from(
-        new Set(
-          [
-            filters.city,
-            this.removeDiacritics(filters.city),
-            this.normalizeCity(filters.city),
-          ].filter(Boolean),
-        ),
+        new Set(this.resolveCityVariants(filters.city).filter(Boolean)),
       );
 
       where.OR = cityVariants.map((city) => ({
@@ -216,8 +210,9 @@ export class PropertiesService {
     if (filters.type) where.type = filters.type;
     if (filters.status) where.status = filters.status;
     if (filters.operation) where.operation = filters.operation;
-    if (filters.rooms) where.rooms = Number(filters.rooms);
-    if (filters.bathrooms) where.bathrooms = Number(filters.bathrooms);
+    // "con 3 habitaciones" = mínimo 3, no exactamente 3
+    if (filters.rooms) where.rooms = { gte: Number(filters.rooms) };
+    if (filters.bathrooms) where.bathrooms = { gte: Number(filters.bathrooms) };
     if (filters.minPrice || filters.maxPrice) {
       where.price = {};
       if (filters.minPrice) where.price.gte = Number(filters.minPrice);
@@ -249,16 +244,6 @@ export class PropertiesService {
 
   async findAllFilteredAndPaginated(filters: PropertyFilters) {
     const { page = 1, pageSize = 10 } = filters;
-    const skip = (page - 1) * pageSize;
-
-    const where: any = {};
-
-    if (filters.title != null && filters.title !== '') {
-      where.OR = [
-        { title_es: { contains: filters.title, mode: 'insensitive' } },
-        { title_en: { contains: filters.title, mode: 'insensitive' } },
-      ];
-    }
 
     const hasMeaningfulFilters =
       !!filters.city ||
@@ -268,29 +253,36 @@ export class PropertiesService {
       !!filters.rooms ||
       !!filters.bathrooms ||
       !!filters.minPrice ||
-      !!filters.maxPrice;
+      !!filters.maxPrice ||
+      !!(filters.title && filters.title.trim() !== '');
 
-    if (!hasMeaningfulFilters && !where.OR?.length) {
-      return {
-        data: [],
-        pagination: {
-          page,
-          pageSize,
-          totalItems: 0,
-          totalPages: 0,
-        },
-      };
+    if (!hasMeaningfulFilters) {
+      return this.findAllPaginated(page, pageSize).then(
+        ({ properties, total }) => ({
+          data: properties,
+          pagination: {
+            page,
+            pageSize,
+            totalItems: total,
+            totalPages: Math.ceil(total / pageSize),
+          },
+        }),
+      );
+    }
+
+    const skip = (page - 1) * pageSize;
+    const where: any = {};
+
+    if (filters.title != null && filters.title !== '') {
+      where.OR = [
+        { title_es: { contains: filters.title, mode: 'insensitive' } },
+        { title_en: { contains: filters.title, mode: 'insensitive' } },
+      ];
     }
 
     if (filters.city) {
       const cityVariants = Array.from(
-        new Set(
-          [
-            filters.city,
-            this.removeDiacritics(filters.city),
-            this.normalizeCity(filters.city),
-          ].filter(Boolean),
-        ),
+        new Set(this.resolveCityVariants(filters.city).filter(Boolean)),
       );
 
       const cityFilters = cityVariants.map((city) => ({
@@ -306,8 +298,9 @@ export class PropertiesService {
     if (filters.type) where.type = filters.type;
     if (filters.status) where.status = filters.status;
     if (filters.operation) where.operation = filters.operation;
-    if (filters.rooms) where.rooms = Number(filters.rooms);
-    if (filters.bathrooms) where.bathrooms = Number(filters.bathrooms);
+    // "con 3 habitaciones" = mínimo 3, no exactamente 3
+    if (filters.rooms) where.rooms = { gte: Number(filters.rooms) };
+    if (filters.bathrooms) where.bathrooms = { gte: Number(filters.bathrooms) };
     if (filters.minPrice || filters.maxPrice) {
       where.price = {};
       if (filters.minPrice) where.price.gte = Number(filters.minPrice);
@@ -334,6 +327,28 @@ export class PropertiesService {
         totalPages: Math.ceil(totalItems / pageSize),
       },
     };
+  }
+
+  private resolveCityVariants(city: string): string[] {
+    const aliases: Record<string, string> = {
+      fungirola: 'Fuengirola',
+      fuengriola: 'Fuengirola',
+      fuengirolo: 'Fuengirola',
+      fuengirola: 'Fuengirola',
+    };
+
+    const normalized = this.normalizeCity(city).toLowerCase();
+    const canonical = aliases[normalized] ?? null;
+    const variants = [
+      city,
+      canonical,
+      this.removeDiacritics(city),
+      this.normalizeCity(city),
+      canonical ? this.removeDiacritics(canonical) : undefined,
+      canonical ? this.normalizeCity(canonical) : undefined,
+    ].filter((item): item is string => Boolean(item));
+
+    return Array.from(new Set(variants));
   }
 
   private removeDiacritics(value: string): string {

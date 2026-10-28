@@ -1,0 +1,21 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Coda agent workspace
+.coda/
+
+# Environment files (root level)
+.env
+.env.*
+
+# Logs
+*.log
+
+# Dependencies (safety net; each app has its own gitignore)
+node_modules/
+
+# Build outputs (safety net)
+dist/
+build/
+.next/

@@ -26,7 +26,7 @@ export default function CookieBanner() {
     setShow(false);
   };
 
-  if (!mounted || !show) return null; // render nothing on server
+  if (!mounted || !show) return null;
 
   return (
     <div data-testid="cookies" role="dialog" className="fixed inset-0 z-50 flex items-end justify-center bg-black/50">
