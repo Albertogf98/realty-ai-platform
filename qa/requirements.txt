@@ -1,5 +1,0 @@
-pytest
-pytest-playwright
-httpx
-deepeval
-python-dotenv
