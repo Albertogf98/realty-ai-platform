@@ -22,6 +22,15 @@ class APIHelper:
         
         return response.text
 
+    def search_properties(self, question: str) -> dict:
+        """Ask the RAG endpoint; returns {answer, filters, properties}."""
+        response = self.client.post(
+            "/ollama/search-properties",
+            json={"question": question},
+        )
+        response.raise_for_status()
+        return response.json()
+
     def close(self) -> None:
         self.client.close()
 

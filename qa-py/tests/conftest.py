@@ -10,11 +10,10 @@ from playwright.sync_api import Playwright, APIRequestContext, Page
 from src.pages.login_page import LoginPage
 from src.pages.cookies_modal_page import CookieModalPage
 
-from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
-from rich.align import Align
+from src.eval.deepeval_metrics import RagMetrics
+from src.eval.metric_specs import METRIC_SPECS
 
+from deepeval.models.llms import OllamaModel
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
@@ -56,3 +55,14 @@ def login_as(page: Page, cookies_modal_page: CookieModalPage) -> Callable[[str, 
         return login_pg
 
     return _login
+
+@pytest.fixture(params=METRIC_SPECS, ids=[spec["name"] for spec in METRIC_SPECS])
+def metric(request) -> RagMetrics:
+    return RagMetrics(**request.param)
+
+@pytest.fixture(scope="session")
+def ollama_judge() -> OllamaModel:
+    return OllamaModel(
+        model=os.getenv("JUDGE_MODEL"),
+        base_url=os.getenv("OLLAMA_URL"),
+    )
