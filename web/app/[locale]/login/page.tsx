@@ -34,6 +34,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
+            data-testid="qa-email-input"
             name="email"
             type="email"
             placeholder={t('email')}
@@ -44,6 +45,7 @@ export default function Login() {
           />
 
           <input
+            data-testid="qa-password-input"
             name="password"
             type="password"
             placeholder={t('password')}
@@ -53,7 +55,13 @@ export default function Login() {
             className="border border-gray-300 p-3 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow-300 text-gray-900 placeholder-gray-400"
           />
 
-          <button name="submit-button" type="submit" disabled={isLoading} className="bg-yellow-700 text-white p-3 rounded font-semibold hover:bg-yellow-600 transition-colors">
+          <button
+            data-testid="qa-submit-button"
+            name="submit-button"
+            type="submit"
+            disabled={isLoading}
+            className="bg-yellow-700 text-white p-3 rounded font-semibold hover:bg-yellow-600 transition-colors"
+          >
             {isLoading ? t('loading') : t('title')}
           </button>
         </form>
