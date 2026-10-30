@@ -199,13 +199,7 @@ export class PropertiesService {
     }
 
     if (filters.city) {
-      const cityVariants = Array.from(
-        new Set(this.resolveCityVariants(filters.city).filter(Boolean)),
-      );
-
-      where.OR = cityVariants.map((city) => ({
-        city: { contains: city, mode: 'insensitive' },
-      }));
+      where.OR = this.buildCityWhereClauses(filters.city);
     }
     if (filters.type) where.type = filters.type;
     if (filters.status) where.status = filters.status;
@@ -240,6 +234,22 @@ export class PropertiesService {
     ]);
 
     return { properties, total };
+  }
+
+  /**
+   * Cities that actually have properties in the database (non-empty names).
+   * Used to suggest alternatives when a search returns no results.
+   */
+  async findAvailableCities(): Promise<string[]> {
+    const rows = await this.repo.findDistinctCities();
+
+    return Array.from(
+      new Set(
+        rows
+          .map(({ city }) => city?.trim())
+          .filter((city): city is string => Boolean(city)),
+      ),
+    ).sort((a, b) => a.localeCompare(b, 'es'));
   }
 
   async findAllFilteredAndPaginated(filters: PropertyFilters) {
@@ -281,13 +291,7 @@ export class PropertiesService {
     }
 
     if (filters.city) {
-      const cityVariants = Array.from(
-        new Set(this.resolveCityVariants(filters.city).filter(Boolean)),
-      );
-
-      const cityFilters = cityVariants.map((city) => ({
-        city: { contains: city, mode: 'insensitive' },
-      }));
+      const cityFilters = this.buildCityWhereClauses(filters.city);
 
       if (where.OR) {
         where.OR = [...where.OR, ...cityFilters];
@@ -349,6 +353,74 @@ export class PropertiesService {
     ].filter((item): item is string => Boolean(item));
 
     return Array.from(new Set(variants));
+  }
+
+  /**
+   * Builds Prisma `contains` conditions for a city.
+   * Postgres `mode: 'insensitive'` does NOT fold diacritics, so a filter for
+   * "Malaga" never matches rows stored as "Málaga". We generate both the
+   * accented and unaccented forms of every variant so either spelling matches.
+   */
+  private buildCityWhereClauses(city: string): Array<{ city: { contains: string; mode: 'insensitive' } }> {
+    const baseVariants = this.resolveCityVariants(city);
+    const withAccents = baseVariants.map((variant) => this.addSpanishDiacritics(variant));
+
+    return Array.from(new Set([...baseVariants, ...withAccents]))
+      .filter(Boolean)
+      .map((variant) => ({
+        city: { contains: variant, mode: 'insensitive' as const },
+      }));
+  }
+
+  /**
+   * Restores common Spanish diacritics on a diacritics-free city name by
+   * matching it against a small set of known Spanish city spellings.
+   * Returns the input unchanged when no known accented form exists.
+   */
+  private addSpanishDiacritics(city: string): string {
+    const normalized = this.normalizeCity(city).toLowerCase();
+    if (!normalized) return city;
+
+    const knownAccented: Record<string, string> = {
+      malaga: 'Málaga',
+      alicante: 'Alicante',
+      cordoba: 'Córdoba',
+      coruna: 'A Coruña',
+      'a coruna': 'A Coruña',
+      gijon: 'Gijón',
+      leon: 'León',
+      cadiz: 'Cádiz',
+      'san sebastian': 'San Sebastián',
+      avila: 'Ávila',
+      aviles: 'Avilés',
+      merida: 'Mérida',
+      bilbao: 'Bilbao',
+      toledo: 'Toledo',
+      zaragoza: 'Zaragoza',
+      sevilla: 'Sevilla',
+      barcelona: 'Barcelona',
+      madrid: 'Madrid',
+      valencia: 'Valencia',
+      murcia: 'Murcia',
+      palma: 'Palma',
+      valladolid: 'Valladolid',
+      vigo: 'Vigo',
+      salamanca: 'Salamanca',
+      santander: 'Santander',
+      granada: 'Granada',
+      almeria: 'Almería',
+      algeciras: 'Algeciras',
+      estepona: 'Estepona',
+      mijas: 'Mijas',
+      marbella: 'Marbella',
+      fuengirola: 'Fuengirola',
+      torremolinos: 'Torremolinos',
+      benalmadena: 'Benalmádena',
+      alanis: 'Alanís',
+      beires: 'Beires',
+    };
+
+    return knownAccented[normalized] ?? city;
   }
 
   private removeDiacritics(value: string): string {

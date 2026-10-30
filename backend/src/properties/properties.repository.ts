@@ -177,4 +177,11 @@ export class PropertiesRepository {
   findMany(params: any) {
     return this.prisma.property.findMany(params);
   }
+
+  findDistinctCities(): Promise<Array<{ city: string }>> {
+    return this.prisma.property.findMany({
+      select: { city: true },
+      distinct: ['city'],
+    });
+  }
 }

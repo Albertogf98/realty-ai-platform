@@ -13,6 +13,7 @@ export { PROPERTY_SYSTEM } from './prompts';
 // Campos de cada propiedad que se envían al modelo (solo los que existan)
 // Mapeo de campos reales de Prisma -> nombre legible para el LLM
 const PROPERTY_PROMPT_FIELD_MAP: Array<[string, string]> = [
+  ['id', 'id'],
   ['title_es', 'title'],
   ['title_en', 'title_en'],
   ['description_es', 'description'],
@@ -164,9 +165,16 @@ export class OllamaService {
 
     // Sin resultados: plantilla fija, sin llamar al modelo (cero riesgo de invento)
     if (properties.length === 0) {
+      const availableCities = await this.propertiesService
+        .findAvailableCities()
+        .catch(() => [] as string[]);
+
+      const citiesHint = availableCities.length
+        ? ` Ahora mismo tengo viviendas en: ${this.formatCityList(availableCities)}.`
+        : '';
+
       return {
-        answer:
-          'Lo siento, ahora mismo no tengo viviendas disponibles que encajen con lo que buscas. ¿Quieres que mire en otra ciudad o podemos ajustar el presupuesto o las habitaciones?',
+        answer: `Lo siento, ahora mismo no tengo viviendas disponibles que encajen con lo que buscas.${citiesHint} ¿Quieres que mire en alguna de esas ciudades o ajustamos el presupuesto o las habitaciones?`,
         filters,
         properties: [],
       };
@@ -194,7 +202,10 @@ export class OllamaService {
 
     const recentHistory = history.slice(-6);
     const transcript = recentHistory
-      .map((entry) => `${entry.role === 'user' ? 'Usuario' : 'Asistente'}: ${entry.content}`)
+      .map(
+        (entry) =>
+          `${entry.role === 'user' ? 'Usuario' : 'Asistente'}: ${entry.content}`,
+      )
       .join('\n');
 
     return `<historial_conversacion>\n${transcript}\n</historial_conversacion>\nPregunta actual: ${question}`;
@@ -351,6 +362,17 @@ Pregunta del usuario: ${question}`;
     ]
       .filter(Boolean)
       .join(', ');
+  }
+
+  /**
+   * Formats a city list for user-facing messages, e.g.
+   * "Fuengirola, Marbella y Málaga" (with "y" before the last item).
+   */
+  private formatCityList(cities: string[]): string {
+    if (cities.length === 1) return cities[0];
+    if (cities.length === 2) return cities.join(' y ');
+
+    return `${cities.slice(0, -1).join(', ')} y ${cities[cities.length - 1]}`;
   }
 
   // ---------------------------------------------------------------------------

@@ -8,7 +8,7 @@
   "scripts": {
     "docker:up": "docker compose up -d",
     "start:dev": "nest start --watch",
-    "be": "npm run docker:up && npm run start:dev",
+    "be": "npm run docker:up && pnpm run start:dev",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

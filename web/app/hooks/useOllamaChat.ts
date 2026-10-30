@@ -28,7 +28,7 @@ export function useOllamaChat() {
     {
       id: 'welcome',
       role: 'assistant',
-      content: 'Hola, soy tu asistente inmobiliario. ¿Qué vivienda estás buscando?',
+      content: 'Hola, soy tu asistente inmobiliario. ¿Qué estás buscando?',
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);

@@ -1,83 +1,54 @@
----
-title: 'Esquema de la base de datos inmobiliaria'
-description: 'Esquema derivado del modelo Property de Prisma y de los filtros validos de la API'
-ms.date: 2026-10-28
----
+<database_schema>
 
-<!-- Fuente: prisma/schema.prisma -->
-<!-- Fuente derivada: src/properties/dto/filter-property.dto.ts -->
+## Property model fields
 
-# Esquema de la base de datos inmobiliaria
-
-## Modelo Property
-
-| Campo            | Tipo             | Valores / enum               | Unidades / notas        |
+| Field            | Type             | Allowed values               | Notes                   |
 | ---------------- | ---------------- | ---------------------------- | ----------------------- |
-| `id`             | `String`         | UUID                         | Identificador único     |
-| `title_es`       | `String`         | -                            | Título en español       |
-| `title_en`       | `String`         | -                            | Título en inglés        |
-| `description_es` | `String`         | -                            | Descripción en español  |
-| `description_en` | `String`         | -                            | Descripción en inglés   |
-| `price`          | `Int`            | -                            | Precio en euros         |
-| `type`           | `PropertyType`   | `HOUSE`, `APARTMENT`         | Tipo de propiedad       |
-| `status`         | `PropertyStatus` | `NEW`, `USED`, `TO_RENOVATE` | Estado                  |
-| `operation`      | `OperationType`  | `SALE`, `RENT`               | Operación               |
-| `rooms`          | `Int`            | -                            | Número de habitaciones  |
-| `bathrooms`      | `Int`            | -                            | Número de baños         |
-| `sqm`            | `Int`            | -                            | Metros cuadrados        |
-| `address`        | `String`         | -                            | Dirección completa      |
-| `city`           | `String`         | -                            | Ciudad                  |
-| `state`          | `String`         | -                            | Comunidad o provincia   |
-| `country`        | `String`         | -                            | País                    |
-| `zipCode`        | `String`         | -                            | Código postal           |
-| `latitude`       | `Float?`         | -                            | Latitud opcional        |
-| `longitude`      | `Float?`         | -                            | Longitud opcional       |
-| `parking`        | `Boolean?`       | -                            | Aparcamiento opcional   |
-| `garden`         | `Boolean?`       | -                            | Jardín opcional         |
-| `isActive`       | `Boolean`        | `true` por defecto           | Propiedad activa        |
-| `createdAt`      | `DateTime`       | -                            | Fecha de creación       |
-| `soldAt`         | `DateTime?`      | -                            | Fecha de venta opcional |
-| `buyerId`        | `String?`        | -                            | Comprador opcional      |
-| `agentId`        | `String`         | -                            | Agente responsable      |
+| `title_es`       | `String`         | -                            | Title in Spanish        |
+| `title_en`       | `String`         | -                            | Title in English        |
+| `description_es` | `String`         | -                            | Description in Spanish  |
+| `description_en` | `String`         | -                            | Description in English  |
+| `price`          | `Int`            | -                            | Price in euros          |
+| `type`           | `PropertyType`   | `HOUSE`, `APARTMENT`         | Property type           |
+| `status`         | `PropertyStatus` | `NEW`, `USED`, `TO_RENOVATE` | Condition               |
+| `operation`      | `OperationType`  | `SALE`, `RENT`               | Operation               |
+| `rooms`          | `Int`            | -                            | Number of bedrooms      |
+| `bathrooms`      | `Int`            | -                            | Number of bathrooms     |
+| `sqm`            | `Int`            | -                            | Square meters           |
+| `address`        | `String`         | -                            | Full address            |
+| `city`           | `String`         | -                            | City                    |
+| `state`          | `String`         | -                            | Region or province      |
+| `country`        | `String`         | -                            | Country                 |
+| `zipCode`        | `String`         | -                            | Postal code             |
+| `parking`        | `Boolean?`       | -                            | Optional parking        |
+| `garden`         | `Boolean?`       | -                            | Optional garden         |
 
-## Enums del modelo
+## Enums
 
-### `PropertyType`
+- `PropertyType`: `HOUSE`, `APARTMENT`
+- `PropertyStatus`: `NEW`, `USED`, `TO_RENOVATE`
+- `OperationType`: `SALE`, `RENT`
 
-- `HOUSE`
-- `APARTMENT`
+## Valid API filters
 
-### `PropertyStatus`
+- `title`: string, optional
+- `city`: string, optional
+- `type`: `HOUSE` or `APARTMENT`, optional
+- `minPrice`: positive number, optional, euros
+- `maxPrice`: positive number, optional, euros
+- `rooms`: positive integer, optional
+- `bathrooms`: positive integer, optional
+- `status`: `NEW`, `USED` or `TO_RENOVATE`, optional
+- `operation`: `SALE` or `RENT`, optional
+- `page`: positive integer, optional
+- `pageSize`: positive integer, optional
 
-- `NEW`
-- `USED`
-- `TO_RENOVATE`
+## Extraction rules
 
-### `OperationType`
+- Return enum values in exact uppercase.
+- Return prices as plain numbers without separators: `200000`, never `200.000`.
+- Return `city` as the city name only, no articles or extra words.
+- Return integers as JSON numbers, never strings.
+- If a value is not mentioned, omit the field. Never invent values.
 
-- `SALE`
-- `RENT`
-
-## Filtros válidos de la API
-
-Los filtros reales admitidos por `propertyFiltersSchema` son:
-
-- `title`: cadena de texto, opcional
-- `city`: cadena de texto, opcional
-- `type`: `HOUSE` o `APARTMENT`, opcional
-- `minPrice`: número positivo, opcional, en euros
-- `maxPrice`: número positivo, opcional, en euros
-- `rooms`: número entero positivo, opcional
-- `bathrooms`: número entero positivo, opcional
-- `status`: `NEW`, `USED` o `TO_RENOVATE`, opcional
-- `operation`: `SALE` o `RENT`, opcional
-- `page`: entero positivo, opcional
-- `pageSize`: entero positivo, opcional
-
-## Reglas de uso para extracción
-
-- Los valores de enum se devuelven en mayúsculas exactas.
-- Los precios deben quedar como números sin separadores: `200000`, no `200.000`.
-- `city` debe ser solo el nombre de la ciudad, sin artículos ni texto adicional.
-- Los enteros deben ser números, no cadenas.
-- Si un dato no se menciona, se omite y no se inventa.
+</database_schema>
