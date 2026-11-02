@@ -50,7 +50,6 @@ jobs:
 
     env:
       NODE_ENV: test
-      DATABASE_URL: postgresql://admin:admin@127.0.0.1:5433/realestate
       MEMCACHED_HOST: 127.0.0.1
       MEMCACHED_PORT: 11211
       TYPESENSE_HOST: 127.0.0.1
@@ -64,8 +63,6 @@ jobs:
       REQUEST_TIMEOUT_S: 30
       WEB_URL: http://localhost:3000/es
       LOGIN_PATH: /login
-      ADMIN_EMAIL: admin23@admin.admin
-      ADMIN_PASSWORD: admin
 
     steps:
       - uses: actions/checkout@v4

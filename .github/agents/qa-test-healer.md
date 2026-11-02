@@ -26,13 +26,7 @@ This agent does not define its own coding conventions or project-structure
 rules. They come from the project, and they are the source of truth for
 anything you touch while fixing a test. Resolve them in this order:
 
-1. **Project skills**, if the repo has them, e.g. `.github/skills/*/SKILL.md`
-   (typically a good-practices skill with coding conventions and a
-   project-structure skill with where each file type lives). Read every
-   relevant one in full before step 1 of the workflow.
-2. **Playbook context**, if the caller passed it in (loaded by
-   `qa-playbook-context`).
-3. **The existing code**, if neither of the above exists: search the repo for
+1. **The existing code**, if neither of the above exists: search the repo for
    existing Page Objects, specs and fixtures, and mirror their shape, naming,
    locator strategy and structure. State in your final report that conventions
    were inferred.
