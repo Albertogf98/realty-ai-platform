@@ -1,27 +1,114 @@
-name: Playwright Tests
+name: QA Backend Tests
+
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
+
 jobs:
-  test:
-    timeout-minutes: 60
+  qa-backend-tests:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: realestate
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd="pg_isready -U admin -d realestate"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+
+      memcached:
+        image: memcached:latest
+        ports:
+          - 11212:11211
+
+      typesense:
+        image: typesense/typesense:0.25.0
+        env:
+          TYPESENSE_API_KEY: xyz123
+        ports:
+          - 8109:8108
+        options: >-
+          --health-cmd="curl -fsS http://127.0.0.1:8108/health || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=15
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://admin:admin@127.0.0.1:5433/realestate
+      MEMCACHED_HOST: 127.0.0.1
+      MEMCACHED_PORT: 11211
+      TYPESENSE_HOST: 127.0.0.1
+      TYPESENSE_PORT: 8108
+      TYPESENSE_API_KEY: xyz123
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
+      API_URL: http://127.0.0.1:4000
+      OLLAMA_URL: http://127.0.0.1:11434
+      JUDGE_MODEL: llama3.1:8b
+      REQUEST_TIMEOUT_S: 30
+      WEB_URL: http://localhost:3000/es
+      LOGIN_PATH: /login
+      ADMIN_EMAIL: admin23@admin.admin
+      ADMIN_PASSWORD: admin
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enable pnpm
+        run: corepack enable && corepack prepare pnpm@latest --activate
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install QA dependencies
+        working-directory: qa-py
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
+
+      - name: Prepare database
+        working-directory: backend
+        run: pnpm exec prisma generate && pnpm exec prisma migrate deploy
+
+      - name: Start backend API on localhost
+        working-directory: backend
+        run: pnpm run start:dev > /tmp/realestate-backend.log 2>&1 &
+
+      - name: Wait for backend to be ready
+        run: |
+          for i in {1..60}; do
+            curl -sS http://127.0.0.1:4000 >/dev/null && exit 0
+            sleep 2
+          done
+          echo "Backend did not start on 127.0.0.1:4000"
+          cat /tmp/realestate-backend.log || true
+          exit 1
+
+      - name: Run QA backend tests
+        working-directory: qa-py
+        run: pytest tests/backend/test_auth.py -q

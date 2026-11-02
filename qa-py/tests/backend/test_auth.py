@@ -1,6 +1,6 @@
 import os
 
-from playwright.sync_api import APIRequestContext, APIResponse
+from playwright.sync_api import APIRequestContext, APIResponse, expect
 from typing import Literal
 from uuid import UUID
 from pydantic import BaseModel, EmailStr
@@ -16,17 +16,17 @@ def login(api_request_context: APIRequestContext, payload: dict[str, str]) -> AP
 def test_should_login_with_valid_credentials(api_request_context: APIRequestContext) -> None: 
     payload = {"email": os.getenv("ADMIN_EMAIL"), "password": os.getenv("ADMIN_PASSWORD") }
     response = login(api_request_context=api_request_context, payload=payload)
-    assert response.ok
+    expect(response).to_be_ok()
 
     user_schema = UserSchema.model_validate(response.json()["user"])
 
-    assert user_schema.email == payload["email"]
-    assert user_schema.role == "AGENT"
+    expect(user_schema.email).to_equal(payload["email"])
+    expect(user_schema.role).to_equal("AGENT")
 
 def test_should_not_login_with_invalid_credentials(api_request_context: APIRequestContext) -> None: 
     response = login(api_request_context=api_request_context, payload={"email": "invalid@invalid.invalid", "password": "invalid" })
-    assert response.status == 401
+    expect(response.status).to_equal(401)
 
 def test_should_not_login_with_empty_credentials(api_request_context: APIRequestContext) -> None: 
    response = login(api_request_context=api_request_context, payload={"email": "", "password": "" })
-   assert response.status == 401
+   expect(response.status).to_equal(401)
