@@ -1,0 +1,11 @@
+{
+    "dominio-compra": {
+        "input": "Quiero comprar un piso en Valencia con 3 habitaciones"
+    },
+    "dominio-alquiler": {
+        "input": "Busco alquiler de casa en Marbella"
+    },
+    "dominio-compra-presupuesto": {
+        "input": "Quiero comprar un piso en Valencia por menos de 200000 euros"
+    }
+}

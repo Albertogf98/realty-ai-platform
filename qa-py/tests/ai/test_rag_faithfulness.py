@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 import pytest
 from deepeval import assert_test
 from deepeval.metrics import FaithfulnessMetric
@@ -6,17 +9,11 @@ from deepeval.test_case import LLMTestCase
 # Cases where the RAG endpoint retrieves properties and generates an answer
 # grounded on them. Faithfulness checks the answer against the retrieved
 # properties (retrieval_context), not against expected_output.
-TEST_CASES = {
-    "dominio-compra": {
-        "input": "Quiero comprar un piso en Valencia con 3 habitaciones",
-    },
-    "dominio-alquiler": {
-        "input": "Busco alquiler de casa en Marbella",
-    },
-    "dominio-compra-presupuesto": {
-        "input": "Quiero comprar un piso en Valencia por menos de 200000 euros",
-    },
-}
+TEST_CASES = json.loads(
+    (Path(__file__).parent / "data_loader" / "rag_domain_queries.json").read_text(
+        encoding="utf-8"
+    )
+)
 
 
 @pytest.mark.parametrize("case", TEST_CASES.values(), ids=TEST_CASES.keys())

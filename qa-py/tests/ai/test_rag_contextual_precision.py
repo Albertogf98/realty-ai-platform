@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 import pytest
 from deepeval import assert_test
 from deepeval.metrics import ContextualPrecisionMetric
@@ -6,20 +9,11 @@ from deepeval.test_case import LLMTestCase
 # Contextual precision checks whether the retrieved properties are relevant
 # to the input and well ranked: relevant context should come first, noise
 # (properties that don't match the filters) should come last.
-TEST_CASES = {
-    "compra-valencia-3hab": {
-        "input": "Quiero comprar un piso en Valencia con 3 habitaciones",
-        "expected_output": "Pisos en venta en Valencia con 3 habitaciones.",
-    },
-    "alquiler-marbella": {
-        "input": "Busco alquiler de casa en Marbella",
-        "expected_output": "Casas en alquiler en Marbella.",
-    },
-    "compra-valencia-presupuesto": {
-        "input": "Quiero comprar un piso en Valencia por menos de 200000 euros",
-        "expected_output": "Pisos en venta en Valencia con precio inferior a 200000 euros.",
-    },
-}
+TEST_CASES = json.loads(
+    (Path(__file__).parent / "data_loader" / "rag_property_search.json").read_text(
+        encoding="utf-8"
+    )
+)
 
 
 @pytest.mark.parametrize("case", TEST_CASES.values(), ids=TEST_CASES.keys())

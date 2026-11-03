@@ -5,6 +5,7 @@ from typing import Generator, Callable
 from pathlib import Path
 from dotenv import load_dotenv
 from src.api.api_helper import APIHelper
+from src.api.api_commons import ApiCommons
 from playwright.sync_api import Playwright, APIRequestContext, Page
 
 from src.pages.login_page import LoginPage
@@ -66,3 +67,11 @@ def ollama_judge() -> OllamaModel:
         model=os.getenv("JUDGE_MODEL"),
         base_url=os.getenv("OLLAMA_URL"),
     )
+
+@pytest.fixture(scope="session")
+def api_commons() -> Generator[ApiCommons, None, None]:
+    commons = ApiCommons()
+    try:
+        yield commons
+    finally:
+        commons.close()

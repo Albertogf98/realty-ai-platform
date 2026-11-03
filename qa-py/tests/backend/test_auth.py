@@ -1,14 +1,7 @@
 import os
 
 from playwright.sync_api import APIRequestContext, APIResponse, expect
-from typing import Literal
-from uuid import UUID
-from pydantic import BaseModel, EmailStr
-
-class UserSchema(BaseModel): 
-    id: UUID
-    email: EmailStr
-    role: Literal["AGENT", "ADMIN"]
+from src.schemas.user_schema import UserSchema
 
 def login(api_request_context: APIRequestContext, payload: dict[str, str]) -> APIResponse:
     return api_request_context.post("/auth/login", data=payload)

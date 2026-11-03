@@ -3,7 +3,7 @@ import os
 import httpx
 
 class APIHelper:
-    def __init__(self,api_url: str | None = None, timeout: float | None = None) -> None:
+    def __init__(self, api_url: str | None = None, timeout: float | None = None) -> None:
         self.api_url = api_url or os.getenv("API_URL")
         self.timeout = (
             timeout

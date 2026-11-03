@@ -1,0 +1,14 @@
+{
+    "compra-valencia-3hab": {
+        "input": "Quiero comprar un piso en Valencia con 3 habitaciones",
+        "expected_output": "Pisos en venta en Valencia con 3 habitaciones."
+    },
+    "alquiler-marbella": {
+        "input": "Busco alquiler de casa en Marbella",
+        "expected_output": "Casas en alquiler en Marbella."
+    },
+    "compra-valencia-presupuesto": {
+        "input": "Quiero comprar un piso en Valencia por menos de 200000 euros",
+        "expected_output": "Pisos en venta en Valencia con precio inferior a 200000 euros."
+    }
+}
