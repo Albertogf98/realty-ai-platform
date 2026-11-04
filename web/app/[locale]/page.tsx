@@ -9,8 +9,10 @@ import { PropertyFilters } from '../interfaces/property.interface';
 import { usePropertiesPaginate } from '../hooks/useProperties';
 import GhuestLayout from './layouts/GuestLayout';
 import Pagination from './components/Pagination';
+import { useTranslations } from 'next-intl';
 
 export default function Page() {
+  const t = useTranslations('Home');
   const [filters, setFilters] = useState<PropertyFilters>({
     page: 1,
     pageSize: 6,
@@ -53,6 +55,7 @@ export default function Page() {
   return (
     <GhuestLayout>
       <div className="p-6 max-w-7xl mx-auto space-y-6" data-testid="property-list">
+        <h1 className="sr-only">{t('title')}</h1>
         <PropertyFiltersComponent filters={localFilters} onChange={handleChangeFilters} onApply={handleApplyFilters} onReset={handleResetFilters} />
 
         <PropertyList properties={data?.data || []} />

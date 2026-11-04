@@ -33,10 +33,13 @@ export class CloudinaryService {
 
   async deleteImage(publicId: string) {
     return new Promise((resolve, reject) => {
-      cloudinary.uploader.destroy(publicId, (error, result) => {
-        if (error) return reject(error);
-        resolve(result);
-      });
+      cloudinary.uploader.destroy(
+        publicId,
+        (error: { message?: string } | null, result) => {
+          if (error) return reject(new Error(error.message ?? 'Unknown error'));
+          resolve(result);
+        },
+      );
     });
   }
 }

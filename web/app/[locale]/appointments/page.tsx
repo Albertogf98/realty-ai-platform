@@ -53,10 +53,11 @@ export default function AppointmentsPage() {
                       <p className="text-gray-500 text-sm">
                         {t('date')}: {formatDate(app.date, locale)}
                       </p>
-                      <p className="text-gray-500 text-sm">{t('client', { email: app.user?.email })}</p>
+                      <p className="text-gray-500 text-sm">{t('client', { email: app.user?.name ?? '' })}</p>
                     </div>
 
                     <button
+                      type="button"
                       onClick={() => handleDelete(app.id)}
                       disabled={isDeleting}
                       className="mt-2 sm:mt-0 ml-0 sm:ml-4 px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"

@@ -6,7 +6,10 @@ import { TypesenseService } from 'src/typesense/typesense.service';
 import { QueueService } from 'src/queue/queue.service';
 
 type PropertyWithRelations = Prisma.PropertyGetPayload<{
-  include: { agent: true; buyer: true; images: true };
+  include: {
+    agent: { select: { id: true; name: true; role: true } };
+    images: true;
+  };
 }>;
 
 @Injectable()
@@ -23,8 +26,8 @@ export class PropertiesRepository {
     filters?: string,
   ): Promise<PropertyWithRelations[]> {
     const cacheKey = query
-      ? `properties:search:${query}:${filters || 'all'}`
-      : 'properties:all:full';
+      ? `properties:search:v2:${query}:${filters || 'all'}`
+      : 'properties:all:full:v2';
 
     const cached = await this.cache.get<PropertyWithRelations[]>(cacheKey);
     if (cached) return cached;
@@ -56,7 +59,10 @@ export class PropertiesRepository {
 
     const properties = await this.prisma.property.findMany({
       where: propertyIds.length ? { id: { in: propertyIds } } : undefined,
-      include: { agent: true, buyer: true, images: true },
+      include: {
+        agent: { select: { id: true, name: true, role: true } },
+        images: true,
+      },
     });
 
     await this.cache.set(cacheKey, properties, 60);
@@ -65,20 +71,23 @@ export class PropertiesRepository {
   }
 
   async findOne(id: string): Promise<PropertyWithRelations | null> {
-    const cacheKey = `property:${id}`;
+    const cacheKey = `property:v2:${id}`;
     const cached = await this.cache.get<PropertyWithRelations>(cacheKey);
     if (cached) return cached;
 
     const property = await this.prisma.property.findUnique({
       where: { id },
-      include: { agent: true, buyer: true, images: true },
+      include: {
+        agent: { select: { id: true, name: true, role: true } },
+        images: true,
+      },
     });
 
     if (property) await this.cache.set(cacheKey, property, 300);
     return property;
   }
 
-  async create(data: any) {
+  async create(data: Prisma.PropertyCreateInput) {
     const property = await this.prisma.property.create({
       data: {
         title_es: data.title_es,
@@ -110,11 +119,11 @@ export class PropertiesRepository {
     return property;
   }
 
-  async update(id: string, data: any) {
+  async update(id: string, data: Prisma.PropertyUpdateInput) {
     const property = await this.prisma.property.update({ where: { id }, data });
 
-    await this.cache.del(`property:${id}`);
-    await this.cache.del('properties:all:full');
+    await this.cache.del(`property:v2:${id}`);
+    await this.cache.del('properties:all:full:v2');
     await this.cache.del('properties:all:light');
 
     try {
@@ -130,15 +139,14 @@ export class PropertiesRepository {
       console.error('Error updating property in Typesense', error);
     }
 
-    console.log(property);
     return property;
   }
 
   async delete(id: string) {
     const property = await this.prisma.property.delete({ where: { id } });
 
-    await this.cache.del(`property:${id}`);
-    await this.cache.del('properties:all:full');
+    await this.cache.del(`property:v2:${id}`);
+    await this.cache.del('properties:all:full:v2');
     await this.cache.del('properties:all:light');
 
     try {
@@ -170,11 +178,11 @@ export class PropertiesRepository {
     return this.prisma.appointment.deleteMany({ where: { propertyId } });
   }
 
-  count(where?: any) {
+  count(where?: Prisma.PropertyWhereInput) {
     return this.prisma.property.count({ where });
   }
 
-  findMany(params: any) {
+  findMany(params: Prisma.PropertyFindManyArgs) {
     return this.prisma.property.findMany(params);
   }
 

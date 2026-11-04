@@ -31,7 +31,7 @@ export default function ChatBotWidget() {
   return (
     <div className="fixed bottom-5 right-5 z-50">
       {open ? (
-        <div className="w-[360px] rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-300/40">
+        <section aria-label="Property search assistant" className="w-[360px] rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-300/40">
           <div className="flex items-center justify-between border-b border-slate-200 bg-slate-900 px-4 py-3 text-white">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
@@ -50,7 +50,13 @@ export default function ChatBotWidget() {
             </button>
           </div>
 
-          <div ref={scrollRef} className="flex max-h-[420px] min-h-[320px] flex-col gap-3 overflow-y-auto bg-slate-50 p-4">
+          <div
+            ref={scrollRef}
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions text"
+            className="flex max-h-[420px] min-h-[320px] flex-col gap-3 overflow-y-auto bg-slate-50 p-4"
+          >
             {messages.map(message => (
               <div
                 key={message.id}
@@ -65,10 +71,18 @@ export default function ChatBotWidget() {
             {isLoading && <div className="mr-auto rounded-2xl bg-white px-3 py-2 text-sm text-slate-500 ring-1 ring-slate-200">Pensando...</div>}
           </div>
 
-          {error && <div className="border-t border-red-200 bg-red-50 px-3 py-2 text-xs text-red-600">{error}</div>}
+          {error && (
+            <div role="alert" className="border-t border-red-200 bg-red-50 px-3 py-2 text-xs text-red-600">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-slate-200 bg-white p-3">
+            <label htmlFor="assistant-question" className="sr-only">
+              Ask about available properties
+            </label>
             <input
+              id="assistant-question"
               type="text"
               value={input}
               onChange={event => setInput(event.target.value)}
@@ -84,10 +98,12 @@ export default function ChatBotWidget() {
               <SendHorizontal className="h-4 w-4" />
             </button>
           </form>
-        </div>
+        </section>
       ) : (
         <button
           type="button"
+          aria-expanded={open}
+          aria-haspopup="dialog"
           onClick={() => setOpen(true)}
           className="flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-slate-300 transition hover:bg-slate-700"
         >

@@ -19,7 +19,7 @@ export class TypesenseService {
       connectionTimeoutSeconds: 5,
     });
 
-    this.createCollection();
+    void this.createCollection();
   }
 
   getClient() {
@@ -57,7 +57,7 @@ export class TypesenseService {
 
     try {
       await this.client.collections(this.collectionName).retrieve();
-    } catch (err) {
+    } catch {
       await this.client.collections().create(schema);
     }
   }
@@ -75,7 +75,7 @@ export class TypesenseService {
 
     try {
       await this.client.collections('users').retrieve();
-    } catch (err) {
+    } catch {
       await this.client.collections().create(schema);
     }
   }

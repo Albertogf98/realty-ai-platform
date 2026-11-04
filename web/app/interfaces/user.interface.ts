@@ -11,5 +11,6 @@ export interface City {
 export interface User {
   id: string;
   email: string;
-  role: 'AGENT' | 'USER';
+  name?: string | null;
+  role: 'AGENT' | 'USER' | 'ADMIN';
 }

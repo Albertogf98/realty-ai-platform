@@ -18,8 +18,13 @@ export default async function LocaleLayout({ children }: RootLayoutProps) {
       <body>
         <NextIntlClientProvider>
           <Providers>
+            <a href="#main-content" className="skip-link">
+              {locale === 'es' ? 'Saltar al contenido principal' : 'Skip to main content'}
+            </a>
             <Header />
-            {children}
+            <main id="main-content" tabIndex={-1}>
+              {children}
+            </main>
             <ChatBotWidget />
             <CookieBanner />
           </Providers>

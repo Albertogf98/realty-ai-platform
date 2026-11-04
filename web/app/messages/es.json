@@ -16,6 +16,9 @@
     "loading": "Cargando...",
     "loadingError": "Error al cargar la página"
   },
+  "Home": {
+    "title": "Encuentra tu próximo hogar"
+  },
 
   "Filters": {
     "title": "Título",
@@ -64,7 +67,10 @@
     "rooms": "hab",
     "bathrooms": "baños",
     "rent": "Alquilar",
-    "buy": "Comprar"
+    "buy": "Comprar",
+    "previousImage": "Imagen anterior",
+    "nextImage": "Imagen siguiente",
+    "showImage": "Mostrar imagen {index} de {total}"
   },
 
   "PropertyDetails": {
@@ -86,6 +92,8 @@
     "deleteFailed": "La eliminación de la propiedad ha fallado. Intenta de nuevo.",
     "deleting": "Eliminando propiedad...",
     "scheduleVisit": "Preguntar por visita",
+    "addFavorite": "Añadir a favoritos",
+    "removeFavorite": "Quitar de favoritos",
     "messageSent": "Mensaje enviado",
     "visitMessage": "Hola, estoy interesado en esta propiedad",
     "loginToSchedule": "Por favor, inicia sesión para agendar una visita"
@@ -253,6 +261,7 @@
     "first": "Primera",
     "prev": "Anterior",
     "next": "Siguiente",
-    "last": "Última"
+    "last": "Última",
+    "page": "Página"
   }
 }

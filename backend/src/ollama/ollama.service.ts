@@ -123,10 +123,12 @@ export class OllamaService {
     });
 
     const message = response.message;
-    const calls = (message.tool_calls ?? []).map((toolCall: any) => ({
-      name: toolCall.function?.name ?? '',
-      arguments: this.parseToolArguments(toolCall.function?.arguments),
-    }));
+    const calls = (message.tool_calls ?? []).map(
+      (toolCall: { function?: { name?: string; arguments?: unknown } }) => ({
+        name: toolCall.function?.name ?? '',
+        arguments: this.parseToolArguments(toolCall.function?.arguments),
+      }),
+    );
 
     return [message.content ?? '', calls];
   }
@@ -161,7 +163,6 @@ export class OllamaService {
     }
 
     const properties = await this.propertiesService.findAllFiltered(filters);
-    const summary = this.summarizeFilters(filters);
 
     // Sin resultados: plantilla fija, sin llamar al modelo (cero riesgo de invento)
     if (properties.length === 0) {
@@ -186,7 +187,6 @@ export class OllamaService {
       filters,
       topProperties,
       properties.length,
-      summary,
     );
 
     return { answer, filters, properties: topProperties };
@@ -262,7 +262,7 @@ export class OllamaService {
     const jsonText = text.slice(start, end + 1);
 
     try {
-      const parsed = JSON.parse(jsonText);
+      const parsed = JSON.parse(jsonText) as unknown;
       if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
         return parsed as Record<string, unknown>;
       }
@@ -310,7 +310,6 @@ export class OllamaService {
     filters: PropertyFilters,
     properties: any[],
     totalFound: number,
-    summary: string,
   ): Promise<string> {
     const fallback = `¡Buenas noticias! He encontrado ${totalFound} ${totalFound === 1 ? 'vivienda' : 'viviendas'} que encajan con lo que buscas. Estas son las más destacadas:`;
 
@@ -336,17 +335,22 @@ Pregunta del usuario: ${question}`;
     }
   }
 
-  private toPromptProperty(property: any): Record<string, any> {
-    const plain =
-      property && typeof property.toJSON === 'function'
-        ? property.toJSON()
-        : property;
+  private toPromptProperty(property: unknown): Record<string, unknown> {
+    const plain = (
+      property &&
+      typeof (property as { toJSON?: unknown }).toJSON === 'function'
+        ? (property as { toJSON: () => Record<string, unknown> }).toJSON()
+        : property
+    ) as Record<string, unknown> | null | undefined;
 
     return Object.fromEntries(
       PROPERTY_PROMPT_FIELD_MAP.filter(
         ([sourceField]) =>
           plain?.[sourceField] !== undefined && plain?.[sourceField] !== null,
-      ).map(([sourceField, promptField]) => [promptField, plain[sourceField]]),
+      ).map(([sourceField, promptField]) => [
+        promptField,
+        plain?.[sourceField],
+      ]),
     );
   }
 
@@ -583,8 +587,8 @@ Pregunta del usuario: ${question}`;
   }
 
   private levenshtein(a: string, b: string): number {
-    const dp = Array.from({ length: a.length + 1 }, () =>
-      Array(b.length + 1).fill(0),
+    const dp: number[][] = Array.from({ length: a.length + 1 }, () =>
+      new Array<number>(b.length + 1).fill(0),
     );
 
     for (let i = 0; i <= a.length; i++) dp[i][0] = i;
@@ -634,8 +638,10 @@ Pregunta del usuario: ${question}`;
 
     if (typeof value === 'string') {
       try {
-        const parsed = JSON.parse(value);
-        return typeof parsed === 'object' && parsed ? parsed : {};
+        const parsed = JSON.parse(value) as unknown;
+        return typeof parsed === 'object' && parsed
+          ? (parsed as Record<string, any>)
+          : {};
       } catch {
         return {};
       }

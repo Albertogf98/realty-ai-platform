@@ -15,12 +15,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(
-    email: string,
-    password: string,
-    name?: string,
-    role: Role = Role.USER,
-  ) {
+  async register(email: string, password: string, name?: string) {
+    email = email.trim().toLowerCase();
     const hashed = await bcrypt.hash(password, 10);
 
     const userExist = await this.usersRepo.findByEmail(email);
@@ -30,7 +26,7 @@ export class AuthService {
       email,
       password: hashed,
       name,
-      role,
+      role: Role.USER,
     });
 
     const payload = { sub: user.id, email: user.email, role: user.role };
@@ -41,6 +37,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
+    email = email.trim().toLowerCase();
     const user = await this.usersRepo.findByEmail(email);
     if (!user) throw new UnauthorizedException('Invalid credentials');
 

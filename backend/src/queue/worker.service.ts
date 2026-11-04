@@ -4,6 +4,26 @@ import { RedisService } from './redis.service';
 import { TypesenseService } from '../typesense/typesense.service';
 import { CacheService } from '../cache/cache.service';
 
+interface PropertyIndexJobData {
+  id: string;
+  title_es: string;
+  title_en: string;
+  description_es: string;
+  description_en: string;
+  price: number;
+  type: string;
+  status: string;
+  operation: string;
+  rooms: number;
+  bathrooms: number;
+  sqm: number;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  agentId: string;
+}
+
 @Injectable()
 export class WorkerService implements OnModuleInit {
   constructor(
@@ -13,7 +33,7 @@ export class WorkerService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    new Worker(
+    new Worker<PropertyIndexJobData>(
       'property',
       async (job) => {
         const property = job.data;

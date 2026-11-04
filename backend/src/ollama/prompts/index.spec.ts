@@ -5,11 +5,12 @@ import { loadPromptFile, resolvePromptIncludes } from './index';
 
 describe('ollama prompt loader', () => {
   it('loads the runtime prompt templates and resolves the schema include', () => {
-    const {
-      PROPERTY_SYSTEM,
-      EXTRACT_SYSTEM,
-      ANSWER_SYSTEM,
-    } = require('./index');
+    const { PROPERTY_SYSTEM, EXTRACT_SYSTEM, ANSWER_SYSTEM } =
+      jest.requireActual<{
+        PROPERTY_SYSTEM: string;
+        EXTRACT_SYSTEM: string;
+        ANSWER_SYSTEM: string;
+      }>('./index');
 
     expect(PROPERTY_SYSTEM).toContain('PropertyType');
     expect(PROPERTY_SYSTEM).toContain('HOUSE');

@@ -3,15 +3,21 @@ import { UsersRepository } from './users.repository';
 import { User, Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
+type UserProfile = Pick<User, 'id' | 'email' | 'name' | 'role' | 'createdAt'>;
+
 @Injectable()
 export class UsersService {
   constructor(private readonly repo: UsersRepository) {}
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<
+    Array<Pick<User, 'id' | 'email' | 'name' | 'role' | 'createdAt'>>
+  > {
     return this.repo.findAll();
   }
 
-  async findOne(id: string): Promise<User> {
+  async findOne(
+    id: string,
+  ): Promise<Pick<User, 'id' | 'email' | 'name' | 'role' | 'createdAt'>> {
     const user = await this.repo.findOne(id);
     if (!user) throw new NotFoundException('User not found');
 
@@ -26,19 +32,24 @@ export class UsersService {
       password: string;
       role: Role;
     }>,
-  ): Promise<User> {
-    if (data.password) data.password = await bcrypt.hash(data.password, 10);
-    return this.repo.update(id, data);
+  ): Promise<UserProfile> {
+    const changes: Partial<User> = { ...data };
+    if (changes.email) changes.email = changes.email.trim().toLowerCase();
+    if (changes.password) {
+      changes.password = await bcrypt.hash(changes.password, 10);
+      changes.refreshToken = null;
+    }
+    return this.repo.update(id, changes);
   }
 
-  async remove(id: string): Promise<User> {
+  async remove(id: string): Promise<UserProfile> {
     const user = await this.repo.findOne(id);
     if (!user) throw new NotFoundException('User not found');
 
     return this.repo.remove(id);
   }
 
-  async findAllAgents(): Promise<User[]> {
+  async findAllAgents(): Promise<Array<Pick<User, 'id' | 'name' | 'role'>>> {
     return this.repo.findAllAgents();
   }
 }

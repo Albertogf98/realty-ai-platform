@@ -27,16 +27,21 @@ export default function Login() {
         <h1 className="text-3xl font-bold text-yellow-700 mb-6 text-center">{t('title')}</h1>
 
         {authError && (
-          <p data-testid="error-modal" className="bg-red-100 text-red-700 p-2 rounded mb-4 text-center font-semibold">
+          <p data-testid="error-modal" role="alert" aria-live="assertive" className="bg-red-100 text-red-700 p-2 rounded mb-4 text-center font-semibold">
             {authError}
           </p>
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <label className="sr-only" htmlFor="login-email">
+            {t('email')}
+          </label>
           <input
+            id="login-email"
             data-testid="qa-email-input"
             name="email"
             type="email"
+            autoComplete="username"
             placeholder={t('email')}
             value={email}
             onChange={e => setEmail(e.target.value)}
@@ -44,10 +49,15 @@ export default function Login() {
             className="border border-gray-300 p-3 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow-300 text-gray-900 placeholder-gray-400"
           />
 
+          <label className="sr-only" htmlFor="login-password">
+            {t('password')}
+          </label>
           <input
+            id="login-password"
             data-testid="qa-password-input"
             name="password"
             type="password"
+            autoComplete="current-password"
             placeholder={t('password')}
             value={password}
             onChange={e => setPassword(e.target.value)}
@@ -68,7 +78,7 @@ export default function Login() {
 
         <p className="mt-4 text-center text-gray-500">
           {t('registerLabel')}{' '}
-          <a href={Routes.REGISTER} className="text-yellow-600 hover:text-yellow-500 font-semibold">
+          <a href={Routes.REGISTER} className="text-yellow-700 hover:text-yellow-800 font-semibold underline">
             {t('register')}
           </a>
         </p>

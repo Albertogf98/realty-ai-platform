@@ -1,17 +1,24 @@
 import PropertyCard from './PropertyCard';
+import { useLocale } from 'next-intl';
+import type { Property } from '@/app/interfaces/property.interface';
 
 interface PropertyListProps {
-  properties: any[]; // ahora es solo un array
+  properties: Property[];
 }
 
 export default function PropertyList({ properties }: PropertyListProps) {
+  const locale = useLocale();
   if (!properties || properties.length === 0) {
-    return <p className="text-center text-gray-500">No properties found.</p>;
+    return (
+      <p role="status" className="text-center text-gray-600">
+        {locale === 'es' ? 'No se encontraron propiedades.' : 'No properties found.'}
+      </p>
+    );
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-      {properties.map((prop: any) => (
+      {properties.map(prop => (
         <PropertyCard key={prop.id} property={prop} />
       ))}
     </div>

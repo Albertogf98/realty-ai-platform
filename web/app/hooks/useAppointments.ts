@@ -32,11 +32,10 @@ function useAppointments() {
   });
 
   const createAppointmentMutation = useMutation({
-    mutationFn: async (data: { propertyId: string; agentId: string; date: string }) => {
+    mutationFn: async (data: { userId: string; propertyId: string; agentId: string; date: string }) => {
       if (!user) throw new Error('Not authenticated');
 
       const res = await api.post<AppointmentWithRelations>('appointments', {
-        userId: user.id,
         ...data,
       });
 

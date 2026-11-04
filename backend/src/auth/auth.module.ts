@@ -16,10 +16,17 @@ import { TypesenseModule } from 'src/typesense/typesense.module';
     TypesenseModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET'),
-        signOptions: { expiresIn: '1d' },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const secret = configService.getOrThrow<string>('JWT_SECRET');
+        if (secret.length < 32) {
+          throw new Error('JWT_SECRET must be at least 32 characters long');
+        }
+
+        return {
+          secret,
+          signOptions: { expiresIn: '1d' },
+        };
+      },
       inject: [ConfigService],
     }),
   ],

@@ -15,9 +15,9 @@ export default function Register() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // Nuevo estado
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
-  const [passwordError, setPasswordError] = useState(''); // Error de confirmación
+  const [passwordError, setPasswordError] = useState('');
 
   const { mutate: register, isPending, isError, error } = useRegister();
 
@@ -56,14 +56,26 @@ export default function Register() {
       <div className="bg-white shadow-lg rounded-xl p-10 w-full max-w-md">
         <h1 className="text-3xl font-bold text-yellow-700 mb-6 text-center">{t('title')}</h1>
 
-        {isError && <p className="error-message bg-red-100 text-red-700 p-2 rounded mb-4 text-center font-semibold">{error?.response?.data?.message || 'Something went wrong'}</p>}
+        {isError && (
+          <p role="alert" aria-live="assertive" className="error-message bg-red-100 text-red-700 p-2 rounded mb-4 text-center font-semibold">
+            {error?.response?.data?.message || 'Something went wrong'}
+          </p>
+        )}
 
-        {passwordError && <p className="error-message bg-red-100 text-red-700 p-2 rounded mb-4 text-center font-semibold">{passwordError}</p>}
+        {passwordError && (
+          <p role="alert" aria-live="assertive" className="error-message bg-red-100 text-red-700 p-2 rounded mb-4 text-center font-semibold">
+            {passwordError}
+          </p>
+        )}
 
-        <form autoComplete="off" data-testid="register-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form data-testid="register-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <label className="sr-only" htmlFor="register-name">
+            {t('name')}
+          </label>
           <input
+            id="register-name"
             name="name"
-            autoComplete="new-name"
+            autoComplete="name"
             data-testid="name-input"
             type="text"
             placeholder={t('name') || 'Nombre'}
@@ -73,9 +85,13 @@ export default function Register() {
             className="border border-gray-300 p-3 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow-300 text-gray-900 placeholder-gray-400"
           />
 
+          <label className="sr-only" htmlFor="register-email">
+            {t('email')}
+          </label>
           <input
+            id="register-email"
             name="email"
-            autoComplete="new-email"
+            autoComplete="email"
             data-testid="email-input"
             type="email"
             placeholder={t('email') || 'Email'}
@@ -85,11 +101,17 @@ export default function Register() {
             className="border border-gray-300 p-3 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow-300 text-gray-900 placeholder-gray-400"
           />
 
+          <label className="sr-only" htmlFor="register-password">
+            {t('password')}
+          </label>
           <input
+            id="register-password"
             name="password"
             autoComplete="new-password"
             data-testid="password-input"
             type="password"
+            minLength={8}
+            maxLength={72}
             placeholder={t('password') || 'Contraseña'}
             value={password}
             onChange={e => setPassword(e.target.value)}
@@ -97,11 +119,17 @@ export default function Register() {
             className="border border-gray-300 p-3 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow-300 text-gray-900 placeholder-gray-400"
           />
 
+          <label className="sr-only" htmlFor="register-confirm-password">
+            {t('confirmPassword')}
+          </label>
           <input
+            id="register-confirm-password"
             name="confirmPassword"
             autoComplete="new-password"
             data-testid="confirm-password-input"
             type="password"
+            minLength={8}
+            maxLength={72}
             placeholder={t('confirmPassword') || 'Confirma la contraseña'}
             value={confirmPassword}
             onChange={e => setConfirmPassword(e.target.value)}
@@ -122,7 +150,7 @@ export default function Register() {
 
         <p className="mt-4 text-center text-gray-500">
           {t('loginLabel') || '¿Ya tienes cuenta?'}{' '}
-          <a data-testid="login-link" href={Routes.LOGIN} className="text-yellow-600 hover:text-yellow-500 font-semibold">
+          <a data-testid="login-link" href={Routes.LOGIN} className="text-yellow-700 hover:text-yellow-800 font-semibold underline">
             {t('login') || 'Inicia sesión'}
           </a>
         </p>

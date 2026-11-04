@@ -29,9 +29,11 @@ export default function CookieBanner() {
   if (!mounted || !show) return null;
 
   return (
-    <div data-testid="cookies" role="dialog" className="fixed inset-0 z-50 flex items-end justify-center bg-black/50">
-      <div className="w-full max-w-3xl rounded-t-xl bg-white p-6 shadow-lg sm:rounded-xl sm:mb-6">
-        <h2 className="mb-2 text-lg font-semibold">🍪 Cookies</h2>
+    <aside data-testid="cookies" aria-labelledby="cookie-banner-heading" className="fixed inset-x-0 bottom-0 z-50 flex justify-center bg-black/50 p-4">
+      <div className="w-full max-w-3xl rounded-xl bg-white p-6 shadow-lg">
+        <h2 id="cookie-banner-heading" className="mb-2 text-lg font-semibold">
+          🍪 Cookies
+        </h2>
 
         <p className="mb-4 text-sm text-gray-600">
           {t.rich('description', {
@@ -53,6 +55,6 @@ export default function CookieBanner() {
           </button>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

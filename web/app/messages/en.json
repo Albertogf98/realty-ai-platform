@@ -16,6 +16,9 @@
     "loading": "Loading...",
     "loadingError": "Error loading the page"
   },
+  "Home": {
+    "title": "Find your next home"
+  },
 
   "Filters": {
     "title": "Title",
@@ -64,7 +67,10 @@
     "rooms": "rooms",
     "bathrooms": "bathrooms",
     "rent": "Rent",
-    "buy": "Buy"
+    "buy": "Buy",
+    "previousImage": "Previous image",
+    "nextImage": "Next image",
+    "showImage": "Show image {index} of {total}"
   },
 
   "PropertyDetails": {
@@ -86,6 +92,8 @@
     "deleteFailed": "Failed to delete the property. Please try again.",
     "deleting": "Removing...",
     "scheduleVisit": "Ask for visit",
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove from favorites",
     "messageSent": "Message for visit sender",
     "visitMessage": "Hello, I´m interesting in this property",
     "loginToSchedule": "Please log in to schedule a visit"
@@ -253,6 +261,7 @@
     "first": "First",
     "prev": "Previous",
     "next": "Next",
-    "last": "Last"
+    "last": "Last",
+    "page": "Page"
   }
 }

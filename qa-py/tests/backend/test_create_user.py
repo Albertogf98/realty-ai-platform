@@ -31,7 +31,7 @@ def test_should_create_user_with_valid_credentials(
     )
     expect(response).to_be_ok()
     create_response = CreateUserResponseSchema.model_validate(response.json())
-    api_commons.delete_user(str(create_response.user.id),admin_access_token,)
+    api_commons.delete_user(str(create_response.user.id), admin_access_token)
 
 
 @pytest.fixture(scope="module")

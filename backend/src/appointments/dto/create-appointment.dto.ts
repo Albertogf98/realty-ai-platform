@@ -1,13 +1,13 @@
-import { IsString, IsDateString } from 'class-validator';
+import { IsDateString, IsUUID } from 'class-validator';
 
 export class CreateAppointmentDto {
-  @IsString()
+  @IsUUID()
   userId: string;
 
-  @IsString()
+  @IsUUID()
   agentId: string;
 
-  @IsString()
+  @IsUUID()
   propertyId: string;
 
   @IsDateString()

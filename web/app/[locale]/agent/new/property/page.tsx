@@ -3,14 +3,13 @@
 import AuthLayout from '@/app/[locale]/layouts/AuthLayout';
 import { useCities } from '@/app/hooks/useCities';
 import { useNewProperty } from '@/app/hooks/useProperties';
-import { useAgents } from '@/app/hooks/useUser';
 import { CreatePropertyDto, OperationType, PropertyStatus, PropertyType } from '@/app/interfaces/property.interface';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function NewPropertyForm() {
   const { form, setField, previewImages, addImages, removeImage, createProperty, isLoading } = useNewProperty();
   const { data: cities, isPending: isCitiesLoading, error: citiesError } = useCities('Spain', 'Andalusia');
-  const { data: agents = [] } = useAgents();
+  const locale = useLocale();
   const t = useTranslations('RegisterProperty');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -77,8 +76,11 @@ export default function NewPropertyForm() {
             ))}
 
             <div>
-              <label className="block font-semibold mb-1 text-gray-900">{t('propertyType')}</label>
+              <label htmlFor="property-type" className="block font-semibold mb-1 text-gray-900">
+                {t('propertyType')}
+              </label>
               <select
+                id="property-type"
                 data-testid="property-type"
                 value={form.type}
                 onChange={e => setField('type', e.target.value as PropertyType)}
@@ -93,8 +95,11 @@ export default function NewPropertyForm() {
             </div>
 
             <div>
-              <label className="block font-semibold mb-1 text-gray-900">{t('status')}</label>
+              <label htmlFor="property-status" className="block font-semibold mb-1 text-gray-900">
+                {t('status')}
+              </label>
               <select
+                id="property-status"
                 data-testid="status"
                 value={form.status}
                 onChange={e => setField('status', e.target.value as PropertyStatus)}
@@ -109,8 +114,11 @@ export default function NewPropertyForm() {
             </div>
 
             <div>
-              <label className="block font-semibold mb-1 text-gray-900">{t('operation')}</label>
+              <label htmlFor="property-operation" className="block font-semibold mb-1 text-gray-900">
+                {t('operation')}
+              </label>
               <select
+                id="property-operation"
                 data-testid="operation"
                 value={form.operation}
                 onChange={e => setField('operation', e.target.value as OperationType)}
@@ -125,8 +133,11 @@ export default function NewPropertyForm() {
             </div>
 
             <div>
-              <label className="block font-semibold mb-1 text-gray-900">{t('city')}</label>
+              <label htmlFor="property-city" className="block font-semibold mb-1 text-gray-900">
+                {t('city')}
+              </label>
               <select
+                id="property-city"
                 data-testid="city"
                 value={form.city}
                 onChange={e => setField('city', e.target.value)}
@@ -138,24 +149,6 @@ export default function NewPropertyForm() {
                 {cities?.map(c => (
                   <option key={c.city} value={c.city}>
                     {c.city}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block font-semibold mb-1 text-gray-900">{t('agent')}</label>
-              <select
-                required
-                data-testid="agent"
-                value={form.agentId}
-                onChange={e => setField('agentId', e.target.value)}
-                className="border p-3 rounded w-full bg-yellow-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
-              >
-                <option value="">{t('selectAgent')}</option>
-                {agents.map(agent => (
-                  <option key={agent.id} value={agent.id}>
-                    {agent.email}
                   </option>
                 ))}
               </select>
@@ -173,25 +166,43 @@ export default function NewPropertyForm() {
             </div>
 
             <div className="col-span-1 md:col-span-2">
-              <label className="block font-semibold mb-2 text-gray-900">{t('images')}</label>
+              <label htmlFor="images" className="block font-semibold mb-2 text-gray-900">
+                {t('images')}
+              </label>
               <div
                 data-testid="image-dropzone"
                 className="border-2 border-dashed border-yellow-400 p-6 rounded text-center cursor-pointer hover:bg-yellow-50 transition"
                 onDragOver={e => e.preventDefault()}
                 onDrop={e => addImages(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')))}
                 onClick={() => document.getElementById('images')?.click()}
+                role="button"
+                tabIndex={0}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    document.getElementById('images')?.click();
+                  }
+                }}
               >
                 {t('dragOrClick')}
               </div>
-              <input type="file" id="images" multiple accept="image/*" className="hidden" onChange={e => e.target.files && addImages(Array.from(e.target.files))} />
+              <input
+                type="file"
+                id="images"
+                multiple
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="sr-only"
+                onChange={e => e.target.files && addImages(Array.from(e.target.files))}
+              />
 
               {previewImages.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
                   {previewImages.map((src, i) => (
                     <div key={i} className="relative">
-                      <img src={src} className="w-24 h-24 object-cover rounded border" />
+                      <img src={src} alt={t('preview') + ` ${i + 1}`} className="w-24 h-24 object-cover rounded border" />
                       <button
                         type="button"
+                        aria-label={locale === 'es' ? `Quitar imagen ${i + 1}` : `Remove image ${i + 1}`}
                         onClick={() => removeImage(i)}
                         className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 hover:bg-red-600 transition"
                       >

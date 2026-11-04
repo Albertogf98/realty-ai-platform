@@ -5,7 +5,7 @@ import { usePropertyById, useScheduleVisit, useUpdateProperty, useCheckVisit } f
 import Loading from '../../components/Loading';
 import LoadingError from '../../components/LoadingError';
 import { useLocale, useTranslations } from 'next-intl';
-import { Bed, Bath, Car, Ruler, Leaf, Mail, Phone } from 'lucide-react';
+import { Bed, Bath, Car, Ruler, Leaf } from 'lucide-react';
 import { PropertyImageSlider } from '../../components/PropertyImageSlider';
 import { useUser } from '@/app/hooks/useUser';
 import DeletePropertyModal from '../../components/DeletePropertyModal';
@@ -77,16 +77,22 @@ export default function PropertyPage({ params }: PropertyPageProps) {
     try {
       const uploadedImages = await uploadNewImages(editableProperty.images);
 
-      const existingImages = editableProperty.images
-        .filter((img: any) => !img.file && img.url !== '/default-property.png')
-        .map((img: any) => ({
-          id: img.id,
-          url: img.url,
-          public_id: img.public_id,
-        }));
+      const existingImages = editableProperty.images.filter((img: any) => !img.file && img.url !== '/default-property.png').map((img: any) => ({ url: img.url }));
 
       const payload = {
-        ...editableProperty,
+        title_es: editableProperty.title_es,
+        title_en: editableProperty.title_en,
+        description_es: editableProperty.description_es,
+        description_en: editableProperty.description_en,
+        address: editableProperty.address,
+        city: editableProperty.city,
+        state: editableProperty.state,
+        price: editableProperty.price,
+        rooms: editableProperty.rooms,
+        bathrooms: editableProperty.bathrooms,
+        sqm: editableProperty.sqm,
+        parking: editableProperty.parking,
+        garden: editableProperty.garden,
         images: [...existingImages, ...uploadedImages],
       };
 
@@ -125,6 +131,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
           {isAgent ? (
             <input
               name="edit-title"
+              aria-label={locale === 'en' ? 'Property title' : 'Título de la propiedad'}
               data-testid="property-title-input"
               className="text-5xl font-bold w-full border-b border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 p-2 rounded-md"
               value={getValue('title_en', 'title_es')}
@@ -140,6 +147,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
           {isAgent ? (
             <input
               name="edit-address"
+              aria-label={locale === 'en' ? 'Property address' : 'Dirección de la propiedad'}
               className="text-xl text-gray-700 w-full border-b border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 p-1 rounded-md mt-2"
               value={editableProperty.address}
               onChange={e => handleFieldChange('address', e.target.value)}
@@ -173,6 +181,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
                   {isAgent ? (
                     <input
                       name={`edit-${field}`}
+                      aria-label={`${field === 'sqm' ? (locale === 'en' ? 'Area' : 'Superficie') : t(field)} ${locale === 'en' ? 'edit' : 'editar'}`}
                       type="number"
                       className="text-2xl font-bold w-24 text-center border-b border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
                       value={editableProperty[field] || ''}
@@ -227,6 +236,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
             {isAgent ? (
               <textarea
                 name="edit-description"
+                aria-label={t('description')}
                 className="w-full border rounded-2xl p-6 text-gray-900 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 text-lg"
                 value={getValue('description_en', 'description_es')}
                 onChange={e => handleFieldChange(locale === 'en' ? 'description_en' : 'description_es', e.target.value)}
@@ -237,6 +247,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
 
             {isAgent && (
               <button
+                type="button"
                 data-testid="save-button"
                 onClick={handleSave}
                 disabled={isSaving || isUpdating}
@@ -257,21 +268,12 @@ export default function PropertyPage({ params }: PropertyPageProps) {
                 </div>
               )}
 
-              <h2 className="text-2xl font-bold mb-4">Agent</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('agent')}</h2>
               <p className="text-gray-900 font-semibold text-lg">{editableProperty.agent.name}</p>
-              <div className="mt-3 flex flex-col gap-2 text-gray-800">
-                <div className="flex items-center gap-2">
-                  <Mail className="h-5 w-5" /> <span>{editableProperty.agent.email}</span>
-                </div>
-                {editableProperty.agent.phone && (
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-5 w-5" /> <span>{editableProperty.agent.phone}</span>
-                  </div>
-                )}
-              </div>
 
               {!isAgent && (
                 <button
+                  type="button"
                   data-testid="schedule-visit-button"
                   onClick={handleScheduleVisit}
                   disabled={hasScheduledVisit || localScheduled || isScheduling}
@@ -291,6 +293,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
               {isAgent && (
                 <>
                   <button
+                    type="button"
                     data-testid="delete-property-button"
                     onClick={() => setShowDeleteModal(true)}
                     className="w-full mt-6 py-3 rounded-xl bg-red-600 text-white hover:bg-red-700 shadow-md text-lg font-semibold"

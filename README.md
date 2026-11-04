@@ -62,7 +62,8 @@ Create `backend/.env` and set the variables used by the API:
 
 ```dotenv
 DATABASE_URL=postgresql://admin:admin@localhost:5433/realestate?schema=public
-JWT_SECRET=replace-with-a-local-development-secret
+JWT_SECRET=replace-with-a-secret-of-at-least-32-characters
+CORS_ORIGINS=http://localhost:3000
 MEMCACHED_HOST=127.0.0.1
 MEMCACHED_PORT=11212
 TYPESENSE_HOST=localhost
@@ -78,7 +79,9 @@ OLLAMA_MODEL=llama3.1:8b
 
 The database URL and Typesense key above match the local Docker Compose
 configuration. Use your own secret and do not use development credentials in
-production. Set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and
+production. `JWT_SECRET` must contain at least 32 characters. Set
+`CORS_ORIGINS` to a comma-separated allowlist of trusted frontend origins when
+you deploy the API. Set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and
 `CLOUDINARY_API_SECRET` if you need to upload listing images.
 
 Install dependencies, generate the Prisma client, apply migrations, and start
@@ -148,6 +151,18 @@ details required by the test fixtures. AI judge tests also use `OLLAMA_URL` and
 `JUDGE_MODEL`. To run selected AI tests, use pytest markers such as
 `pytest -m "contract or rag"`, `pytest -m hallucination`,
 `pytest -m judge -s`, or `pytest -m latency -s`.
+
+## Security and accessibility
+
+The API requires JWT authentication for private operations, enforces ownership
+and role checks, validates request bodies, applies rate limits, and uses
+Helmet security headers. Public registration always assigns the user role.
+Configure `JWT_SECRET` and `CORS_ORIGINS` for each environment, and use HTTPS
+with production secrets when deploying.
+
+The web interface includes keyboard-visible focus, labeled controls, a
+skip-to-content link, and reduced-motion support. These improvements do not
+replace a complete WCAG audit.
 
 ## Repository layout
 

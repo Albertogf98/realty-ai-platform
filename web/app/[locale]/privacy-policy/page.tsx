@@ -4,7 +4,7 @@ export default function PoliticaPrivacidad() {
   const t = useTranslations('Privacy');
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4">
       <article className="mx-auto max-w-4xl rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
         {/* Title */}
         <header className="mb-10 border-b pb-6">
@@ -59,6 +59,6 @@ export default function PoliticaPrivacidad() {
           {t('lastUpdate')} <time dateTime={new Date().toISOString()}>{new Date().toLocaleDateString()}</time>
         </footer>
       </article>
-    </main>
+    </div>
   );
 }

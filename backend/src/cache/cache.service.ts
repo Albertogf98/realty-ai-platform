@@ -17,7 +17,7 @@ export class CacheService {
       if (!result?.value) return null;
 
       return JSON.parse(result.value.toString()) as T;
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -27,7 +27,7 @@ export class CacheService {
       await this.client.set(key, JSON.stringify(value), {
         expires: ttlSeconds,
       });
-    } catch (error) {
+    } catch {
       return;
     }
   }
@@ -35,7 +35,7 @@ export class CacheService {
   async del(key: string) {
     try {
       await this.client.delete(key);
-    } catch (error) {
+    } catch {
       return;
     }
   }

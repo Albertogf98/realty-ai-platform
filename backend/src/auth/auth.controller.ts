@@ -1,31 +1,26 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
-import { Role } from '@prisma/client';
+import { LoginDto, RefreshTokenDto, RegisterDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
-  async login(
-    @Body('email') email: string,
-    @Body('password') password: string,
-  ) {
-    return this.authService.login(email, password);
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  async login(@Body() body: LoginDto) {
+    return this.authService.login(body.email, body.password);
   }
 
   @Post('refresh')
-  async refresh(@Body() body: { refreshToken: string; userId: string }) {
+  async refresh(@Body() body: RefreshTokenDto) {
     return this.authService.refreshToken(body.userId, body.refreshToken);
   }
 
   @Post('register')
-  async register(
-    @Body('email') email: string,
-    @Body('password') password: string,
-    @Body('name') name?: string,
-    @Body('role') role?: Role,
-  ) {
-    return this.authService.register(email, password, name, role);
+  @Throttle({ default: { limit: 3, ttl: 60_000 } })
+  async register(@Body() body: RegisterDto) {
+    return this.authService.register(body.email, body.password, body.name);
   }
 }

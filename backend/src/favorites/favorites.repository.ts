@@ -14,7 +14,7 @@ export class FavoritesRepository {
       data: { userId, propertyId },
     });
 
-    await this.cache.del(`user:${userId}:favorites`);
+    await this.cache.del(`user:${userId}:favorites:v2`);
     return favorite;
   }
 
@@ -23,12 +23,12 @@ export class FavoritesRepository {
       where: { userId, propertyId },
     });
 
-    await this.cache.del(`user:${userId}:favorites`);
+    await this.cache.del(`user:${userId}:favorites:v2`);
     return result;
   }
 
   async findByUser(userId: string) {
-    const cacheKey = `user:${userId}:favorites`;
+    const cacheKey = `user:${userId}:favorites:v2`;
     const cached = await this.cache.get(cacheKey);
 
     if (cached) return cached;
@@ -38,15 +38,40 @@ export class FavoritesRepository {
       orderBy: { createdAt: 'desc' },
       include: {
         property: {
-          include: {
-            agent: true,
+          select: {
+            id: true,
+            title_es: true,
+            title_en: true,
+            description_es: true,
+            description_en: true,
+            price: true,
+            type: true,
+            status: true,
+            operation: true,
+            rooms: true,
+            bathrooms: true,
+            sqm: true,
+            address: true,
+            city: true,
+            state: true,
+            country: true,
+            zipCode: true,
+            latitude: true,
+            longitude: true,
+            parking: true,
+            garden: true,
+            isActive: true,
+            createdAt: true,
+            soldAt: true,
+            agentId: true,
+            agent: { select: { id: true, name: true, role: true } },
             images: true,
           },
         },
       },
     });
 
-    await this.cache.set(cacheKey, favorites, 300); // TTL 5 min
+    await this.cache.set(cacheKey, favorites, 300);
     return favorites;
   }
 

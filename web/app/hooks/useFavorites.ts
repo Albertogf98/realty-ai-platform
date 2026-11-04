@@ -25,7 +25,7 @@ export function useFavorites() {
   const addFavoriteMutation = useMutation<AxiosResponse, Error, string, { previousFavorites: Favorite[] | undefined }>({
     mutationFn: async (propertyId: string) => {
       if (!user) throw new Error('Not authenticated');
-      return api.post('favorites', { userId: user.id, propertyId });
+      return api.post('favorites', { propertyId });
     },
     onMutate: async (propertyId: string) => {
       await queryClient.cancelQueries({ queryKey: ['favorites', user?.id] });

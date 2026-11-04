@@ -54,12 +54,16 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         {hasImages && property.images.length > 1 && (
           <>
             <button
+              type="button"
+              aria-label={t('previousImage')}
               onClick={prevImage}
               className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white p-1 rounded-full hover:bg-opacity-50 transition"
             >
               &#10094;
             </button>
             <button
+              type="button"
+              aria-label={t('nextImage')}
               onClick={nextImage}
               className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white p-1 rounded-full hover:bg-opacity-50 transition"
             >
@@ -73,6 +77,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             {property.images.map((img, idx) => (
               <button
                 key={idx}
+                type="button"
+                aria-label={t('showImage', { index: idx + 1, total: property.images.length })}
+                aria-pressed={idx === currentImageIndex}
                 onClick={e => {
                   e.stopPropagation();
                   setCurrentImageIndex(idx);

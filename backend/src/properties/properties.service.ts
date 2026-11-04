@@ -1,11 +1,14 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { PropertyFilters } from './dto/filter-property.dto';
+import { UpdatePropertyDto } from './dto/update-property.dto';
 import { PropertiesRepository } from './properties.repository';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -22,16 +25,17 @@ export class PropertiesService {
     if (!files || files.length === 0)
       throw new BadRequestException('No images provided');
 
+    const { agentId, ...rest } = data;
     const uploadedImages = await Promise.all(
-      files.map((file) => this.cloudinaryService.uploadFile(file)),
+      files.map((file) =>
+        this.cloudinaryService.uploadFile(file, `realestate/${agentId}`),
+      ),
     );
 
-    const imagesData = uploadedImages.map((img: any) => ({
+    const imagesData = uploadedImages.map((img) => ({
       url: img.url,
       public_id: img.public_id,
     }));
-
-    const { agentId, ...rest } = data;
 
     const property = await this.repo.create({
       ...rest,
@@ -58,109 +62,118 @@ export class PropertiesService {
     return property;
   }
 
-  async update(id: string, data: any, files?: Express.Multer.File[]) {
+  async update(
+    id: string,
+    data: UpdatePropertyDto,
+    actorId: string,
+    files?: Express.Multer.File[],
+  ) {
     const property = await this.prisma.property.findUnique({
       where: { id },
       include: { images: true },
     });
 
     if (!property) throw new NotFoundException('Property not found');
+    if (property.agentId !== actorId) {
+      throw new ForbiddenException('You can only manage your own listings');
+    }
 
-    const {
-      images: newImagesData,
-      agent,
-      buyer,
-      createdAt,
-      soldAt,
-      ...rest
-    } = data;
+    const { images: newImagesData, ...rest } = data;
 
-    let imagesUpdate: Array<{ url: string; public_id: string }> = [];
+    const imagesUpdate: Array<{ url: string; public_id: string }> = [];
 
     // 1️⃣ Subir archivos nuevos
     if (files && files.length > 0) {
       try {
         const uploadedImages = await Promise.all(
-          files.map((file) => this.cloudinaryService.uploadFile(file)),
+          files.map((file) =>
+            this.cloudinaryService.uploadFile(file, `realestate/${actorId}`),
+          ),
         );
         imagesUpdate.push(...uploadedImages);
-      } catch (err: any) {
+      } catch (err: unknown) {
         throw new InternalServerErrorException(
-          `Error uploading images: ${err.message || ''}`,
+          `Error uploading images: ${err instanceof Error ? err.message : ''}`,
         );
       }
     }
 
     // 2️⃣ Procesar imágenes existentes enviadas desde el front
-    if (newImagesData && newImagesData.length > 0) {
-      const imagesToKeepUrls = newImagesData.map((img: any) => img.url);
-
-      // Borrar las imágenes que ya no se quieren
+    if (newImagesData) {
+      const desiredUrls = new Set(newImagesData.map((img) => img.url));
       const imagesToDelete = property.images.filter(
-        (img) => !imagesToKeepUrls.includes(img.url),
+        (img) => !desiredUrls.has(img.url),
       );
 
-      for (const img of imagesToDelete) {
-        if (img.public_id) {
-          try {
-            await this.cloudinaryService.deleteImage(img.public_id);
-          } catch (err: any) {
-            console.warn(
-              `Failed to delete image ${img.public_id}: ${err.message}`,
-            );
-          }
+      for (const image of newImagesData) {
+        const existingImage = property.images.find(
+          (item) => item.url === image.url,
+        );
+        if (existingImage) continue;
+
+        const expectedFolder = `realestate/${actorId}/`;
+        const expectedCloudinaryPrefix = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/`;
+        if (
+          !image.public_id?.startsWith(expectedFolder) ||
+          !image.url.startsWith(expectedCloudinaryPrefix) ||
+          !image.url.includes(image.public_id)
+        ) {
+          throw new BadRequestException(
+            'New listing images must be uploaded to your account',
+          );
         }
+
+        imagesUpdate.push({ url: image.url, public_id: image.public_id });
       }
 
-      // Agregar las nuevas imágenes enviadas desde front que no existían
-      imagesUpdate.push(
-        ...newImagesData
-          .filter((img: any) => !property.images.some((p) => p.url === img.url))
-          .map((img: any) => ({ url: img.url, public_id: img.public_id })),
-      );
+      for (const img of imagesToDelete) {
+        if (!img.public_id) continue;
+        try {
+          await this.cloudinaryService.deleteImage(img.public_id);
+        } catch (err: unknown) {
+          console.warn(`Failed to delete image ${img.public_id}`, err);
+        }
+      }
     }
 
     // 3️⃣ Construir datos de actualización
-    const updateData: any = {
-      ...rest,
-      agentId: agent?.id,
-    };
+    const updateData: Prisma.PropertyUpdateInput = { ...rest };
 
     // 4️⃣ Manejar relación de imágenes
     if (imagesUpdate.length > 0) {
-      // Hay imágenes → borrar las que no están y crear las nuevas
       updateData.images = {
         deleteMany: {
-          url: { notIn: imagesUpdate.map((img) => img.url) },
+          url: {
+            notIn: [
+              ...(newImagesData?.map((img) => img.url) ?? []),
+              ...imagesUpdate.map((img) => img.url),
+            ],
+          },
         },
         create: imagesUpdate,
       };
-    } else if (
-      (files && files.length === 0) ||
-      (newImagesData && newImagesData.length === 0)
-    ) {
-      // No hay imágenes → borrar todas las existentes
+    } else if (newImagesData) {
       updateData.images = {
-        deleteMany: {},
+        deleteMany:
+          newImagesData.length === 0
+            ? {}
+            : { url: { notIn: newImagesData.map((img) => img.url) } },
       };
     }
 
     // 5️⃣ Ejecutar update en la base de datos
-    const updatedProperty = await this.prisma.property.update({
-      where: { id },
-      data: updateData,
-      include: { images: true },
-    });
-
-    return updatedProperty;
+    return this.repo.update(id, updateData);
   }
 
-  async remove(id: string) {
+  async remove(id: string, actorId: string) {
     const property = await this.repo.findOne(id);
     if (!property) throw new NotFoundException('Property not found');
+    if (property.agentId !== actorId) {
+      throw new ForbiddenException('You can only manage your own listings');
+    }
 
     for (const img of property.images) {
-      const publicId = (img as any).public_id;
+      const publicId = img.public_id;
 
       if (publicId)
         try {
@@ -181,11 +194,13 @@ export class PropertiesService {
   }
 
   async findAllFiltered(filters?: PropertyFilters) {
-    const where: any = {};
+    const where: Prisma.PropertyWhereInput = {};
     if (!filters) return this.repo.findAll();
+    const orFilters: Prisma.PropertyWhereInput[] = [];
 
     const hasMeaningfulFilters =
       !!filters.city ||
+      !!filters.title ||
       !!filters.type ||
       !!filters.status ||
       !!filters.operation ||
@@ -199,8 +214,15 @@ export class PropertiesService {
     }
 
     if (filters.city) {
-      where.OR = this.buildCityWhereClauses(filters.city);
+      orFilters.push(...this.buildCityWhereClauses(filters.city));
     }
+    if (filters.title) {
+      orFilters.push(
+        { title_es: { contains: filters.title, mode: 'insensitive' } },
+        { title_en: { contains: filters.title, mode: 'insensitive' } },
+      );
+    }
+    if (orFilters.length > 0) where.OR = orFilters;
     if (filters.type) where.type = filters.type;
     if (filters.status) where.status = filters.status;
     if (filters.operation) where.operation = filters.operation;
@@ -216,7 +238,10 @@ export class PropertiesService {
     return this.repo.findMany({
       where,
       orderBy: { createdAt: 'desc' },
-      include: { agent: true, images: true },
+      include: {
+        agent: { select: { id: true, name: true, role: true } },
+        images: true,
+      },
     });
   }
 
@@ -228,7 +253,10 @@ export class PropertiesService {
         skip,
         take: pageSize,
         orderBy: { createdAt: 'desc' },
-        include: { agent: true, buyer: true, images: true },
+        include: {
+          agent: { select: { id: true, name: true, role: true } },
+          images: true,
+        },
       }),
       this.repo.count(),
     ]);
@@ -281,24 +309,20 @@ export class PropertiesService {
     }
 
     const skip = (page - 1) * pageSize;
-    const where: any = {};
+    const where: Prisma.PropertyWhereInput = {};
+    const orFilters: Prisma.PropertyWhereInput[] = [];
 
     if (filters.title != null && filters.title !== '') {
-      where.OR = [
+      orFilters.push(
         { title_es: { contains: filters.title, mode: 'insensitive' } },
         { title_en: { contains: filters.title, mode: 'insensitive' } },
-      ];
+      );
     }
 
     if (filters.city) {
-      const cityFilters = this.buildCityWhereClauses(filters.city);
-
-      if (where.OR) {
-        where.OR = [...where.OR, ...cityFilters];
-      } else {
-        where.OR = cityFilters;
-      }
+      orFilters.push(...this.buildCityWhereClauses(filters.city));
     }
+    if (orFilters.length > 0) where.OR = orFilters;
     if (filters.type) where.type = filters.type;
     if (filters.status) where.status = filters.status;
     if (filters.operation) where.operation = filters.operation;
@@ -317,7 +341,10 @@ export class PropertiesService {
         skip,
         take: pageSize,
         orderBy: { createdAt: 'desc' },
-        include: { agent: true, images: true },
+        include: {
+          agent: { select: { id: true, name: true, role: true } },
+          images: true,
+        },
       }),
       this.repo.count(where),
     ]);
@@ -361,9 +388,11 @@ export class PropertiesService {
    * "Malaga" never matches rows stored as "Málaga". We generate both the
    * accented and unaccented forms of every variant so either spelling matches.
    */
-  private buildCityWhereClauses(city: string): Array<{ city: { contains: string; mode: 'insensitive' } }> {
+  private buildCityWhereClauses(city: string): Prisma.PropertyWhereInput[] {
     const baseVariants = this.resolveCityVariants(city);
-    const withAccents = baseVariants.map((variant) => this.addSpanishDiacritics(variant));
+    const withAccents = baseVariants.map((variant) =>
+      this.addSpanishDiacritics(variant),
+    );
 
     return Array.from(new Set([...baseVariants, ...withAccents]))
       .filter(Boolean)

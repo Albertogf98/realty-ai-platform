@@ -61,7 +61,7 @@ export interface Property {
   garden?: boolean;
   operation?: string;
   images: { url: string }[];
-  agent: { id: string; name: string; email: string; phone?: string };
+  agent: { id: string; name: string; role?: string };
 }
 
 export interface CreatePropertyDto {

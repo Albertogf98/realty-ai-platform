@@ -34,6 +34,9 @@ export default function LanguageSwitcher() {
   return (
     <div className="relative inline-block text-left">
       <button
+        type="button"
+        aria-label={currentLocale === 'es' ? `Idioma: ${currentLabel}` : `Language: ${currentLabel}`}
+        aria-expanded={open}
         onClick={() => setOpen(!open)}
         className="inline-flex justify-center w-full px-4 py-2 bg-gray-100 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none"
       >
@@ -42,13 +45,18 @@ export default function LanguageSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+        <div
+          aria-label={currentLocale === 'es' ? 'Seleccionar idioma' : 'Select language'}
+          className="absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+        >
           <div className="py-1">
             {locales.map(locale => {
               const isActive = currentLocale === locale.code;
               return (
                 <button
                   key={locale.code}
+                  type="button"
+                  aria-current={isActive ? 'true' : undefined}
                   onClick={() => handleLocaleChange(locale.code)}
                   className={`block w-full text-left px-4 py-2 text-sm ${isActive ? 'bg-yellow-600 text-white' : 'text-gray-700 hover:bg-gray-100'}`}
                 >
