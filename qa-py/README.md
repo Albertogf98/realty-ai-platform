@@ -7,3 +7,6 @@ pytest -m "contract or rag"     # rápidos
 pytest -m hallucination
 pytest -m judge -s              # -s para ver los veredictos
 pytest -m latency -s          
+
+
+Start oyhton venv: source .venv/bin/activate

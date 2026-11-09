@@ -6,9 +6,9 @@ from deepeval import assert_test
 from deepeval.metrics import AnswerRelevancyMetric
 from deepeval.test_case import LLMTestCase
 
-#  - pytest tests/ai/test_rag_faithfulness.py -v -s — show reasons/scores inline
-#  - pytest tests/ai/test_rag_faithfulness.py -k dominio — run only the in-domain cases
-#  - pytest tests/ai/test_rag_faithfulness.py --tb=short — compact tracebacks
+#  - pytest tests/ai/test_rag_answer_relevance.py -v -s — show reasons/scores inline
+#  - pytest tests/ai/test_rag_answer_relevance.py -k dominio — run only the in-domain cases
+#  - pytest tests/ai/test_rag_answer_relevance.py --tb=short — compact tracebacks
 
 #   python -m pip install -r requirements.txt
 #   python3 -m venv .venv

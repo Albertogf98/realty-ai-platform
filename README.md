@@ -44,6 +44,19 @@ Install the following tools before running the project:
 
 ## Run locally
 
+### Start the full local stack
+
+After configuring `backend/.env` and `web/.env` (or `web/.env.local`), run this
+from the repository root:
+
+```bash
+./start-all.sh
+```
+
+The script starts the Docker services, applies database migrations, and runs
+the API and frontend. Press `Ctrl+C` to stop the API and frontend. The Docker
+services remain running; stop them with `cd backend && docker compose down`.
+
 ### Start backend dependencies
 
 From the backend directory, start the database and supporting services:
