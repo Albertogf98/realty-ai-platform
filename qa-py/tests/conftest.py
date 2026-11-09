@@ -8,6 +8,7 @@ from src.api.api_helper import APIHelper
 from src.api.api_commons import ApiCommons
 from playwright.sync_api import Playwright, APIRequestContext, Page
 
+from src.schemas.auth_schema import LoginResponseSchema
 from src.pages.login_page import LoginPage
 from src.pages.cookies_modal_page import CookieModalPage
 
@@ -75,3 +76,18 @@ def api_commons() -> Generator[ApiCommons, None, None]:
         yield commons
     finally:
         commons.close()
+
+@pytest.fixture(scope="session")
+def agent_auth(api_commons: ApiCommons) -> LoginResponseSchema:
+    email = os.getenv("ADMIN_EMAIL")
+    password = os.getenv("ADMIN_PASSWORD")
+    if not email or not password:
+        pytest.fail(
+            "Set ADMIN_EMAIL and ADMIN_PASSWORD in qa-py/.env "
+            "to run authenticated backend tests"
+        )
+
+    login_response = api_commons.login({"email": email, "password": password})
+    if login_response.user.role != "AGENT":
+        pytest.fail("ADMIN_EMAIL must identify an AGENT account for property API tests")
+    return login_response
